@@ -39,5 +39,34 @@ namespace FinalYearProject_BE.Controllers
 
             return CreatedAtAction("GetCategoryById", new { id = categoryModel.Id }, categoryModel);
         }
+
+        // GET: api/Category
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<CategoryModel>>> GetCategories()
+        {
+            if (_context.Categories == null)
+            {
+                return NotFound();
+            }
+            return await _context.Categories.ToListAsync();
+        }
+
+        // GET: api/Category/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<CategoryModel>> GetCategoryById(int id)
+        {
+            if (_context.Categories == null)
+            {
+                return NotFound();
+            }
+            var category = await _context.Categories.FindAsync(id);
+
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            return category;
+        }
     }
 }
