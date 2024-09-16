@@ -68,5 +68,45 @@ namespace FinalYearProject_BE.Controllers
 
             return category;
         }
+
+        // PUT: api/Category/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditCategory(int id, CategoryModel categoryModel)
+        {
+            if (id != categoryModel.Id)
+            {
+                return BadRequest();
+            }
+
+            if (categoryModel == null)
+            {
+                return BadRequest("Category data is null.");
+            }
+
+            _context.Entry(categoryModel).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CategoryModelExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        private bool CategoryModelExists(int id)
+        {
+            return (_context.Categories?.Any(c => c.Id == id)).GetValueOrDefault();
+        }
     }
 }
