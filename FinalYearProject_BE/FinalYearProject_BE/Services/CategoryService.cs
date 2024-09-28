@@ -43,11 +43,13 @@ namespace FinalYearProject_BE.Services
         public async Task UpdateCategory(int id, CategoryDTO categoryDto)
         {
             var category = await _categoryRepository.GetCategoryById(id);
-            if (category != null)
+            if (category == null)
             {
-                category.Name = categoryDto.Name;
-                await _categoryRepository.UpdateCategory(category);
-            }    
+                throw new KeyNotFoundException($"Category with ID {id} not found.");
+            }
+            
+            category.Name = categoryDto.Name;
+            await _categoryRepository.UpdateCategory(category);
         }
 
         public async Task DeleteCategory(int id)
