@@ -54,7 +54,13 @@ namespace FinalYearProject_BE.Services
 
         public async Task DeleteCategory(int id)
         {
-            await _categoryRepository.DeleteCategory(id);
+            var category = await _categoryRepository.GetCategoryById(id);
+            if (category == null)
+            {
+                throw new KeyNotFoundException($"Category with ID {id} not found.");
+            }
+
+            await _categoryRepository.DeleteCategory(category);
         }
     }
 }
