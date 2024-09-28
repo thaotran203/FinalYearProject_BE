@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FinalYearProject_BE.Services;
 using FinalYearProject_BE.DTOs;
 using FinalYearProject_BE.Services.IService;
+using FinalYearProject_BE.Models;
 
 namespace FinalYearProject_BE.Controllers
 {
@@ -38,6 +39,26 @@ namespace FinalYearProject_BE.Controllers
 
             await _categoryService.CreateCategory(categoryDto);
             return CreatedAtAction("GetCategoryById", new { id = categoryDto.Id }, categoryDto);
+        }
+
+        // GET: api/Category
+        [HttpGet]
+        public async Task<IActionResult> GetCategories()
+        {
+            var categories = await _categoryService.GetCategories();
+            return Ok(categories);
+        }
+
+        // GET: api/Category/5
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCategoryById(int id)
+        {
+            var category = await _categoryService.GetCategoryById(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            return Ok(category);
         }
     }
 }
