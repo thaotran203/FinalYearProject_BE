@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using FinalYearProject_BE.Data;
-using FinalYearProject_BE.Models;
+using FinalYearProject_BE.Services;
+using FinalYearProject_BE.DTOs;
+using FinalYearProject_BE.Services.IService;
 
 namespace FinalYearProject_BE.Controllers
 {
@@ -14,30 +15,29 @@ namespace FinalYearProject_BE.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICategoryService _categoryService;
 
-        public CategoryController(ApplicationDbContext context)
+        public CategoryController(ICategoryService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
         // POST: api/Category
         [HttpPost]
-        public async Task<ActionResult<CategoryModel>> CreateCategory(CategoryModel categoryModel)
+        public async Task<IActionResult> CreateCategory(CategoryDTO categoryDto)
         {
-            if (categoryModel == null)
+            if (categoryDto == null)
             {
                 return BadRequest("Category data is null.");
             }
 
-            if (_context.Categories == null)
+            if (string.IsNullOrWhiteSpace(categoryDto.Name))
             {
-                return Problem("Entity set 'ApplicationDbContext.Categories' is null.");
+                return BadRequest("Category name must not be empty.");
             }
-            _context.Categories.Add(categoryModel);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCategoryById", new { id = categoryModel.Id }, categoryModel);
+            await _categoryService.CreateCategory(categoryDto);
+            return CreatedAtAction("GetCategoryById", new { id = categoryDto.Id }, categoryDto);
         }
     }
 }

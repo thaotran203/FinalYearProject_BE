@@ -1,5 +1,9 @@
 using FinalYearProject_BE.Data;
 using FinalYearProject_BE.Models;
+using FinalYearProject_BE.Repository.IRepository;
+using FinalYearProject_BE.Repository;
+using FinalYearProject_BE.Services.IService;
+using FinalYearProject_BE.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -19,11 +23,15 @@ namespace FinalYearProject_BE
             // Add services to the container.
 
             builder.Services.AddControllers();
-            //builder.Services.AddDbContext<>();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddSession();
+            builder.Services.AddAutoMapper(typeof(Program));
+
+            // Dang ky cac service va repository
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
 
             builder.Services.ConfigureApplicationCookie(options =>
             {
