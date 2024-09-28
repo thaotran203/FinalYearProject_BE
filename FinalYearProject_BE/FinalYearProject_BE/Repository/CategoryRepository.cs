@@ -36,14 +36,10 @@ namespace FinalYearProject_BE.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteCategory(int id)
+        public async Task DeleteCategory(CategoryModel category)
         {
-            var category = await GetCategoryById(id);
-            if (category != null)
-            { 
-                _context.Categories.Remove(category);
-                await _context.SaveChangesAsync();
-            }
+            _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<bool> ExistsByName(string name)

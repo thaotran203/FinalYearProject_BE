@@ -61,6 +61,7 @@ namespace FinalYearProject_BE.Controllers
             return Ok(category);
         }
 
+        // PUT: api/Category/5
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(int id, CategoryDTO categoryDto)
         {
@@ -70,6 +71,14 @@ namespace FinalYearProject_BE.Controllers
             }
             await _categoryService.UpdateCategory(id, categoryDto);
             return Ok("Category updated successfully.");
+        }
+
+        // DELETE: api/Category/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            await _categoryService.DeleteCategory(id);
+            return Ok("Category deleted successfully.");
         }
     }
 }

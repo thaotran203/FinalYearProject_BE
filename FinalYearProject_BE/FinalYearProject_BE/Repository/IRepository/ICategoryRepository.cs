@@ -9,7 +9,7 @@ namespace FinalYearProject_BE.Repository.IRepository
         Task<CategoryModel> GetCategoryById(int id);
         Task CreateCategory(CategoryModel category);
         Task UpdateCategory(CategoryModel category);
-        Task DeleteCategory(int id);
+        Task DeleteCategory(CategoryModel category);
         Task<bool> ExistsByName(string name);
     }
 }
