@@ -60,5 +60,16 @@ namespace FinalYearProject_BE.Controllers
             }
             return Ok(category);
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCategory(int id, CategoryDTO categoryDto)
+        {
+            if (string.IsNullOrWhiteSpace(categoryDto.Name))
+            {
+                return BadRequest("Category name must not be empty.");
+            }
+            await _categoryService.UpdateCategory(id, categoryDto);
+            return Ok("Category updated successfully.");
+        }
     }
 }
