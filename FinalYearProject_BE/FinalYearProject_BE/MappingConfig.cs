@@ -9,6 +9,7 @@ namespace FinalYearProject_BE
         public MappingConfig()
         {
             CreateMap<CategoryDTO, CategoryModel>().ReverseMap();
+            CreateMap<CourseDTO, CourseModel>().ReverseMap();
         }
     }
 }

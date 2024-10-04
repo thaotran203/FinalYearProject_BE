@@ -18,6 +18,9 @@ namespace FinalYearProject_BE.Models
         public int TotalQuestion { get; set; }
 
         [Required]
+        public bool IsDeleted { get; set; }
+
+        [Required]
         [ForeignKey("Lesson")]
         public int LessonId { get; set; }
         [ValidateNever]

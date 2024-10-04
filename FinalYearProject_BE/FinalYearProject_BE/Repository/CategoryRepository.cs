@@ -16,18 +16,29 @@ namespace FinalYearProject_BE.Repository
 
         public async Task CreateCategory(CategoryModel category)
         {
-            await _context.Categories.AddAsync(category);
+            category.IsDeleted = false;
+            _context.Categories.Add(category);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<CategoryModel>> GetCategories()
+        public async Task<List<CategoryModel>> GetAllCategories()
         {
-            return await _context.Categories.ToListAsync();
+            return await _context.Categories
+                .Where(c => c.IsDeleted == false)
+                .ToListAsync();
         }
 
         public async Task<CategoryModel> GetCategoryById(int id)
         {
-            return await _context.Categories.FindAsync(id);
+            var category = await _context.Categories
+                .Where(c => c.IsDeleted == false && c.Id == id)
+                .FirstOrDefaultAsync();
+
+            if (category == null)
+            {
+                throw new KeyNotFoundException("Category not found.");
+            }
+            return category;
         }
 
         public async Task UpdateCategory(CategoryModel category)
@@ -36,8 +47,35 @@ namespace FinalYearProject_BE.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteCategory(CategoryModel category)
+        public async Task SoftDeleteCategory(int id)
         {
+            var category = await GetCategoryById(id);
+            category.IsDeleted = true;
+            _context.Categories.Update(category);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RestoreCategory(int id)
+        {
+            var category = await _context.Categories.FindAsync(id);
+            if (category == null)
+            {
+                throw new KeyNotFoundException("Category not found.");
+            }
+
+            category.IsDeleted = false;
+            _context.Categories.Update(category);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task HardDeleteCategory(int id)
+        {
+            var category = await _context.Categories.FindAsync(id);
+            if (category == null)
+            {
+                throw new KeyNotFoundException("Category not found.");
+            }
+
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
         }

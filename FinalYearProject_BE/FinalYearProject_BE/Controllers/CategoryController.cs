@@ -17,10 +17,12 @@ namespace FinalYearProject_BE.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
+        private readonly ICourseService _courseService;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService, ICourseService courseService)
         {
             _categoryService = categoryService;
+            _courseService = courseService;
         }
 
         // POST: api/Category
@@ -43,9 +45,9 @@ namespace FinalYearProject_BE.Controllers
 
         // GET: api/Category
         [HttpGet]
-        public async Task<IActionResult> GetCategories()
+        public async Task<IActionResult> GetAllCategories()
         {
-            var categories = await _categoryService.GetCategories();
+            var categories = await _categoryService.GetAllCategories();
             return Ok(categories);
         }
 
@@ -53,32 +55,87 @@ namespace FinalYearProject_BE.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategoryById(int id)
         {
-            var category = await _categoryService.GetCategoryById(id);
-            if (category == null)
+            try
             {
-                return NotFound();
+                var category = await _categoryService.GetCategoryById(id);
+                return Ok(category);
             }
-            return Ok(category);
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         // PUT: api/Category/5
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(int id, CategoryDTO categoryDto)
         {
-            if (string.IsNullOrWhiteSpace(categoryDto.Name))
+            try
             {
-                return BadRequest("Category name must not be empty.");
+                await _categoryService.UpdateCategory(id, categoryDto);
+                return Ok("Category updated successfully.");
             }
-            await _categoryService.UpdateCategory(id, categoryDto);
-            return Ok("Category updated successfully.");
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        // DELETE: api/Category/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
+        [HttpDelete("SoftDelete/{id}")]
+        public async Task<IActionResult> SoftDeleteCategory(int id)
         {
-            await _categoryService.DeleteCategory(id);
-            return Ok("Category deleted successfully.");
+            try
+            {
+                await _categoryService.SoftDeleteCategory(id);
+                return Ok("Category deleted successfully.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        // PUT: api/Category/Restore/5
+        [HttpPut("Restore/{id}")]
+        public async Task<IActionResult> RestoreCategory(int id)
+        {
+            try
+            {
+                await _categoryService.RestoreCategory(id);
+                return Ok("Category restored successfully");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpDelete("HardDelete/{id}")]
+        public async Task<IActionResult> HardDeleteCategory(int id)
+        {
+            try
+            {
+                await _categoryService.HardDeleteCategory(id);
+                return Ok("Category was permanently deleted.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpGet("{id}/Courses")]
+        public async Task<IActionResult> GetCoursesByCategoryId(int id)
+        {
+            try
+            {
+                var courses = await _courseService.GetCoursesByCategoryId(id);
+                return Ok(courses);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }
