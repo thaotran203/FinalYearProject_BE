@@ -54,5 +54,19 @@ namespace FinalYearProject_BE.Controllers
             }
             return Ok(course);
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCourse(int id, CourseDTO courseDto)
+        {
+            try
+            {
+                await _courseService.UpdateCourse(id, courseDto);
+                return Ok("Course updated successfully.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }
