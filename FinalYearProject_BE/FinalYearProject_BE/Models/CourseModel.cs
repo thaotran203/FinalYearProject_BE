@@ -20,10 +20,10 @@ namespace FinalYearProject_BE.Models
         [Required]
         public double Price { get; set; }
 
-        public string? InstructorId { get; set; }
+        public int InstructorId { get; set; }
 
         [Required]
-        public bool IsDelete { get; set; }
+        public bool IsDeleted { get; set; }
 
         [Required]
         [ForeignKey("Category")]

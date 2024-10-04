@@ -28,9 +28,9 @@ namespace FinalYearProject_BE.Services
             await _categoryRepository.CreateCategory(category);
         }
 
-        public async Task<List<CategoryDTO>> GetCategories()
+        public async Task<List<CategoryDTO>> GetAllCategories()
         {
-            var categories = await _categoryRepository.GetCategories();
+            var categories = await _categoryRepository.GetAllCategories();
             return _mapper.Map<List<CategoryDTO>>(categories);
         }
 
@@ -43,24 +43,24 @@ namespace FinalYearProject_BE.Services
         public async Task UpdateCategory(int id, CategoryDTO categoryDto)
         {
             var category = await _categoryRepository.GetCategoryById(id);
-            if (category == null)
-            {
-                throw new KeyNotFoundException($"Category with ID {id} not found.");
-            }
             
             category.Name = categoryDto.Name;
             await _categoryRepository.UpdateCategory(category);
         }
 
-        public async Task DeleteCategory(int id)
+        public async Task SoftDeleteCategory(int id)
         {
-            var category = await _categoryRepository.GetCategoryById(id);
-            if (category == null)
-            {
-                throw new KeyNotFoundException($"Category with ID {id} not found.");
-            }
+            await _categoryRepository.SoftDeleteCategory(id);
+        }
 
-            await _categoryRepository.DeleteCategory(category);
+        public async Task RestoreCategory(int id)
+        {
+            await _categoryRepository.RestoreCategory(id);
+        }
+
+        public async Task HardDeleteCategory(int id)
+        {
+            await _categoryRepository.HardDeleteCategory(id);
         }
     }
 }

@@ -14,6 +14,9 @@ namespace FinalYearProject_BE.Models
         [Required]
         public string Name { get; set; }
 
+        [Required]
+        public bool IsDeleted { get; set; }
+
         [NotMapped]
         [ValidateNever]
         public List<CourseModel> Courses { get; set; }

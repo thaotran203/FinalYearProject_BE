@@ -29,8 +29,10 @@ namespace FinalYearProject_BE
             builder.Services.AddAutoMapper(typeof(Program));
 
             // Dang ky cac service va repository
-            builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+            builder.Services.AddScoped<ICourseService, CourseService>();
 
 
             builder.Services.ConfigureApplicationCookie(options =>
