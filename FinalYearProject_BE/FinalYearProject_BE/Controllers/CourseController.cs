@@ -36,5 +36,23 @@ namespace FinalYearProject_BE.Controllers
             await _courseService.CreateCourse(courseDto);
             return CreatedAtAction("GetCourseById", new { id = courseDto.Id }, courseDto);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllCourses()
+        {
+            var courses = await _courseService.GetAllCourses();
+            return Ok(courses);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCourseById(int id)
+        {
+            var course = await _courseService.GetCourseById(id);
+            if (course == null)
+            {
+                return NotFound();
+            }
+            return Ok(course);
+        }
     }
 }
