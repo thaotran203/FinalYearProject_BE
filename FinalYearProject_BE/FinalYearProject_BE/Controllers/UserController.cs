@@ -12,11 +12,13 @@ namespace FinalYearProject_BE.Controllers
     {
         private readonly IUserService _userService;
         private readonly IJwtTokenService _jwtTokenService;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public UserController(IUserService userService, IJwtTokenService jwtTokenService)
+        public UserController(IUserService userService, IJwtTokenService jwtTokenService, ICloudinaryService cloudinaryService)
         {
             _userService = userService;
             _jwtTokenService = jwtTokenService;
+            _cloudinaryService = cloudinaryService;
         }
 
         [HttpPost("Register")]
@@ -96,6 +98,23 @@ namespace FinalYearProject_BE.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
+
+        [HttpPost("UploadAvatar")]
+        public async Task<IActionResult> UploadAvatar([FromForm] IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded.");
+
+            var updatedUser = await _cloudinaryService.UploadImage(file);
+
+            var userId = int.Parse(User.FindFirst("Id")?.Value);
+            if (userId == null)
+                return Unauthorized("User ID not found in token.");
+
+            await _userService.UpdateUser(userId, updatedUser);
+
+            return Ok(new { updatedUser.ImageUrl });
         }
 
         [HttpDelete("SoftDelete/{id}")]

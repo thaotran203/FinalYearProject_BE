@@ -51,6 +51,8 @@ namespace FinalYearProject_BE
             builder.Services.AddSession();
             builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddScoped<IPasswordHasher<UserModel>, PasswordHasher<UserModel>>();
+            builder.Services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
+
 
             // Dang ky cac service va repository
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -63,6 +65,7 @@ namespace FinalYearProject_BE
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+            builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 
 
             builder.Services.ConfigureApplicationCookie(options =>
