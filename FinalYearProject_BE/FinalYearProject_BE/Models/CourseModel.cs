@@ -20,6 +20,9 @@ namespace FinalYearProject_BE.Models
         [Required]
         public double Price { get; set; }
 
+        [Required]
+        public string ImageLink { get; set; }
+
         public int InstructorId { get; set; }
 
         [Required]

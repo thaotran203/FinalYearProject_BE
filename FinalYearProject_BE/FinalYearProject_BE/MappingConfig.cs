@@ -10,6 +10,9 @@ namespace FinalYearProject_BE
         {
             CreateMap<CategoryDTO, CategoryModel>().ReverseMap();
             CreateMap<CourseDTO, CourseModel>().ReverseMap();
+            CreateMap<RegisterUserDTO, UserModel>().ReverseMap();
+            CreateMap<UpdateUserDTO, UserModel>().ReverseMap();
+            CreateMap<UserModel, UserDTO>().ReverseMap();
         }
     }
 }
