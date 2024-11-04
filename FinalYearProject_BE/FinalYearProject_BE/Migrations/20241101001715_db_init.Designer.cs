@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinalYearProject_BE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241002234852_UpdateModels")]
-    partial class UpdateModels
+    [Migration("20241101001715_db_init")]
+    partial class db_init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -81,6 +81,10 @@ namespace FinalYearProject_BE.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageLink")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -415,6 +419,34 @@ namespace FinalYearProject_BE.Migrations
                     b.ToTable("User");
                 });
 
+            modelBuilder.Entity("FinalYearProject_BE.Models.UserTokenModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("Expiration")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TokenType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserToken");
+                });
+
             modelBuilder.Entity("FinalYearProject_BE.Models.AnswerModel", b =>
                 {
                     b.HasOne("FinalYearProject_BE.Models.QuestionModel", "Question")
@@ -593,6 +625,17 @@ namespace FinalYearProject_BE.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("FinalYearProject_BE.Models.UserTokenModel", b =>
+                {
+                    b.HasOne("FinalYearProject_BE.Models.UserModel", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FinalYearProject_BE.Models.QuestionModel", b =>

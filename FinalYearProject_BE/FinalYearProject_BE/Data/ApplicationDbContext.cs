@@ -23,6 +23,7 @@ namespace FinalYearProject_BE.Data
         public DbSet<QuestionModel> Questions { get; set; }
         public DbSet<TestModel> Tests { get; set; }
         public DbSet<TestQuestionModel> TestQuestions { get; set; }
+        public DbSet<UserTokenModel> UserTokens { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
