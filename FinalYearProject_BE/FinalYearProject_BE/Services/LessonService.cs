@@ -41,5 +41,16 @@ namespace FinalYearProject_BE.Services
             var lessons = await _lessonRepository.GetLessonsByCourseId(courseId);
             return _mapper.Map<List<LessonDTO>>(lessons);
         }
+
+        public async Task UpdateLesson(int id, LessonDTO lessonDto)
+        {
+            var lesson = await _lessonRepository.GetLessonById(id);
+
+            lesson.Title = lessonDto.Title;
+            lesson.Description = lessonDto.Description;
+            lesson.CourseId = lessonDto.CourseId;
+
+            await _lessonRepository.UpdateLesson(lesson);
+        }
     }
 }
