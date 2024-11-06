@@ -22,5 +22,30 @@ namespace FinalYearProject_BE.Controllers
             await _lessonService.CreateLesson(lessonDto);
             return CreatedAtAction(nameof(GetLessonById), new { id = lessonDto.Id }, lessonDto);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllLessons()
+        {
+            var lessons = await _lessonService.GetAllLessons();
+            return Ok(lessons);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetLessonById(int id)
+        {
+            var lesson = await _lessonService.GetLessonById(id);
+            if (lesson == null)
+            {
+                return NotFound();
+            }
+            return Ok(lesson);
+        }
+
+        [HttpGet("Course/{courseId}")]
+        public async Task<IActionResult> GetLessonsByCourseId(int courseId)
+        {
+            var lessons = await _lessonService.GetLessonsByCourseId(courseId);
+            return Ok(lessons);
+        }
     }
 }
