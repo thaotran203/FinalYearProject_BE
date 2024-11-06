@@ -21,5 +21,27 @@ namespace FinalYearProject_BE.Repository
             await _context.Lessons.AddAsync(lesson);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<LessonModel>> GetAllLessons()
+        {
+            return await _context.Lessons
+                .Where(l => l.IsDeleted == false)
+                .ToListAsync();
+        }
+
+        public async Task<LessonModel> GetLessonById(int id)
+        {
+            var lesson = await _context.Lessons
+                .Where(l => l.IsDeleted == false && l.Id == id)
+                .FirstOrDefaultAsync();
+
+            if (lesson == null) throw new KeyNotFoundException("Lesson not found.");
+            return lesson;
+        }
+
+        public async Task<List<LessonModel>> GetLessonsByCourseId(int courseId)
+        {
+            return await _context.Lessons.Where(l => l.CourseId == courseId && !l.IsDeleted).ToListAsync();
+        }
     }
 }

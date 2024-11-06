@@ -23,5 +23,23 @@ namespace FinalYearProject_BE.Services
             var lesson = _mapper.Map<LessonModel>(lessonDto);
             await _lessonRepository.CreateLesson(lesson);
         }
+
+        public async Task<List<LessonDTO>> GetAllLessons()
+        {
+            var lessons = await _lessonRepository.GetAllLessons();
+            return _mapper.Map<List<LessonDTO>>(lessons);
+        }
+
+        public async Task<LessonDTO> GetLessonById(int id)
+        {
+            var lesson = await _lessonRepository.GetLessonById(id);
+            return _mapper.Map<LessonDTO>(lesson);
+        }
+
+        public async Task<List<LessonDTO>> GetLessonsByCourseId(int courseId)
+        {
+            var lessons = await _lessonRepository.GetLessonsByCourseId(courseId);
+            return _mapper.Map<List<LessonDTO>>(lessons);
+        }
     }
 }
