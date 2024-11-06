@@ -14,7 +14,6 @@ namespace FinalYearProject_BE.Models
         [Required]
         public string Title { get; set; }
 
-        [Required]
         public string Description { get; set; }
 
         [Required]
@@ -37,5 +36,9 @@ namespace FinalYearProject_BE.Models
         [NotMapped]
         [ValidateNever]
         public List<FileModel> Files { get; set; }
+
+        [NotMapped]
+        [ValidateNever]
+        public List<LessonProgressModel> LessonProgresses { get; set; }
     }
 }

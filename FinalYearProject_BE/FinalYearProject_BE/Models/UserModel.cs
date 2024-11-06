@@ -53,5 +53,10 @@ namespace FinalYearProject_BE.Models
         [NotMapped]
         [ValidateNever]
         public List<MessageModel> ReceivedMessages { get; set; }
+
+        [NotMapped]
+        [ValidateNever]
+        public List<LessonProgressModel> LessonProgresses { get; set; }
+
     }
 }

@@ -12,7 +12,8 @@ namespace FinalYearProject_BE
             CreateMap<CourseDTO, CourseModel>().ReverseMap();
             CreateMap<RegisterUserDTO, UserModel>().ReverseMap();
             CreateMap<UpdateUserDTO, UserModel>().ReverseMap();
-            CreateMap<UserModel, UserDTO>().ReverseMap();
+            CreateMap<UserDTO, UserModel>().ReverseMap();
+            CreateMap<LessonDTO, LessonModel>().ReverseMap();
         }
     }
 }

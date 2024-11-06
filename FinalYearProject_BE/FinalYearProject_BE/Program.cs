@@ -58,11 +58,13 @@ namespace FinalYearProject_BE
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<ICourseRepository, CourseRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<ILessonRepository, LessonRepository>();
             builder.Services.AddScoped<IUserTokenRepository, UserTokenRepository>();
 
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICourseService, CourseService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ILessonService, LessonService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
             builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
