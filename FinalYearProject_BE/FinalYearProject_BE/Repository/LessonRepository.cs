@@ -49,5 +49,38 @@ namespace FinalYearProject_BE.Repository
             _context.Lessons.Update(lesson);
             await _context.SaveChangesAsync();
         }
+
+        public async Task SoftDeleteLesson(int id)
+        {
+            var lesson = await GetLessonById(id);
+            lesson.IsDeleted = true;
+            _context.Lessons.Update(lesson);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RestoreLesson(int id)
+        {
+            var lesson = await _context.Lessons.FindAsync(id);
+            if (lesson == null)
+            {
+                throw new KeyNotFoundException("Lesson not found.");
+            }
+
+            lesson.IsDeleted = false;
+            _context.Lessons.Update(lesson);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task HardDeleteLesson(int id)
+        {
+            var lesson = await _context.Lessons.FindAsync(id);
+            if (lesson == null)
+            {
+                throw new KeyNotFoundException("Lesson not found.");
+            }
+
+            _context.Lessons.Remove(lesson);
+            await _context.SaveChangesAsync();
+        }
     }
 }

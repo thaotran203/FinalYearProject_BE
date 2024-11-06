@@ -52,5 +52,20 @@ namespace FinalYearProject_BE.Services
 
             await _lessonRepository.UpdateLesson(lesson);
         }
+
+        public async Task SoftDeleteLesson(int id)
+        {
+            await _lessonRepository.SoftDeleteLesson(id);
+        }
+
+        public async Task RestoreLesson(int id)
+        {
+            await _lessonRepository.RestoreLesson(id);
+        }
+
+        public async Task HardDeleteLesson(int id)
+        {
+            await _lessonRepository.SoftDeleteLesson(id);
+        }
     }
 }
