@@ -43,5 +43,11 @@ namespace FinalYearProject_BE.Repository
         {
             return await _context.Lessons.Where(l => l.CourseId == courseId && !l.IsDeleted).ToListAsync();
         }
+
+        public async Task UpdateLesson(LessonModel lesson)
+        {
+            _context.Lessons.Update(lesson);
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -47,5 +47,19 @@ namespace FinalYearProject_BE.Controllers
             var lessons = await _lessonService.GetLessonsByCourseId(courseId);
             return Ok(lessons);
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateLesson(int id, LessonDTO lessonDto)
+        {
+            try
+            {
+                await _lessonService.UpdateLesson(id, lessonDto);
+                return Ok("Lesson updated successfully.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }
