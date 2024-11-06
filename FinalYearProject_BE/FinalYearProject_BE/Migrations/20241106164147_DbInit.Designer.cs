@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinalYearProject_BE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241101001715_db_init")]
-    partial class db_init
+    [Migration("20241106164147_DbInit")]
+    partial class DbInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -79,6 +79,10 @@ namespace FinalYearProject_BE.Migrations
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
+
+                    b.Property<string>("CourseContent")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -222,6 +226,32 @@ namespace FinalYearProject_BE.Migrations
                     b.ToTable("Lesson");
                 });
 
+            modelBuilder.Entity("FinalYearProject_BE.Models.LessonProgressModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("LessonId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LessonId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("LessonProgress");
+                });
+
             modelBuilder.Entity("FinalYearProject_BE.Models.MessageModel", b =>
                 {
                     b.Property<int>("Id")
@@ -254,7 +284,7 @@ namespace FinalYearProject_BE.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Massage");
+                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("FinalYearProject_BE.Models.PaymentModel", b =>
@@ -527,6 +557,25 @@ namespace FinalYearProject_BE.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("FinalYearProject_BE.Models.LessonProgressModel", b =>
+                {
+                    b.HasOne("FinalYearProject_BE.Models.LessonModel", "Lesson")
+                        .WithMany()
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FinalYearProject_BE.Models.UserModel", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lesson");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FinalYearProject_BE.Models.MessageModel", b =>

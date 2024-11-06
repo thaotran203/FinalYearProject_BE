@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FinalYearProject_BE.Migrations
 {
-    public partial class db_init : Migration
+    public partial class DbInit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -44,6 +44,7 @@ namespace FinalYearProject_BE.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CourseContent = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
                     ImageLink = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     InstructorId = table.Column<int>(type: "int", nullable: false),
@@ -93,7 +94,7 @@ namespace FinalYearProject_BE.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CourseId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -136,7 +137,7 @@ namespace FinalYearProject_BE.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Massage",
+                name: "Message",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -149,21 +150,21 @@ namespace FinalYearProject_BE.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Massage", x => x.Id);
+                    table.PrimaryKey("PK_Message", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Massage_Course_CourseId",
+                        name: "FK_Message_Course_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Course",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Massage_User_ReceiverId",
+                        name: "FK_Message_User_ReceiverId",
                         column: x => x.ReceiverId,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Massage_User_SenderId",
+                        name: "FK_Message_User_SenderId",
                         column: x => x.SenderId,
                         principalTable: "User",
                         principalColumn: "Id",
@@ -237,6 +238,33 @@ namespace FinalYearProject_BE.Migrations
                         name: "FK_File_Lesson_LessonId",
                         column: x => x.LessonId,
                         principalTable: "Lesson",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LessonProgress",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    LessonId = table.Column<int>(type: "int", nullable: false),
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LessonProgress", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LessonProgress_Lesson_LessonId",
+                        column: x => x.LessonId,
+                        principalTable: "Lesson",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LessonProgress_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -402,18 +430,28 @@ namespace FinalYearProject_BE.Migrations
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Massage_CourseId",
-                table: "Massage",
+                name: "IX_LessonProgress_LessonId",
+                table: "LessonProgress",
+                column: "LessonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LessonProgress_UserId",
+                table: "LessonProgress",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Message_CourseId",
+                table: "Message",
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Massage_ReceiverId",
-                table: "Massage",
+                name: "IX_Message_ReceiverId",
+                table: "Message",
                 column: "ReceiverId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Massage_SenderId",
-                table: "Massage",
+                name: "IX_Message_SenderId",
+                table: "Message",
                 column: "SenderId");
 
             migrationBuilder.CreateIndex(
@@ -472,7 +510,10 @@ namespace FinalYearProject_BE.Migrations
                 name: "Grade");
 
             migrationBuilder.DropTable(
-                name: "Massage");
+                name: "LessonProgress");
+
+            migrationBuilder.DropTable(
+                name: "Message");
 
             migrationBuilder.DropTable(
                 name: "Payment");
