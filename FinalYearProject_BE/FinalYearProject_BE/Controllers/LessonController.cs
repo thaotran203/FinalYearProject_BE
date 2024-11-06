@@ -61,5 +61,47 @@ namespace FinalYearProject_BE.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpDelete("SoftDelete/{id}")]
+        public async Task<IActionResult> SoftDeleteLesson(int id)
+        {
+            try
+            {
+                await _lessonService.SoftDeleteLesson(id);
+                return Ok("Lesson deleted successfully.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpPut("Restore/{id}")]
+        public async Task<IActionResult> RestoreLesson(int id)
+        {
+            try
+            {
+                await _lessonService.RestoreLesson(id);
+                return Ok("Lesson restored successfully");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpDelete("HardDelete/{id}")]
+        public async Task<IActionResult> HardDeleteLesson(int id)
+        {
+            try
+            {
+                await _lessonService.HardDeleteLesson(id);
+                return Ok("Lesson was permanently deleted.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }
