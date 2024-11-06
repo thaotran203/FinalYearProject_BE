@@ -67,5 +67,15 @@ namespace FinalYearProject_BE.Services
         {
             await _lessonRepository.SoftDeleteLesson(id);
         }
+
+        public async Task<IEnumerable<LessonProgressDTO>> GetLessonsWithProgressByCourseId(int userId, int courseId)
+        {
+            return await _lessonRepository.GetLessonsWithProgressByCourseId(courseId, userId);
+        }
+
+        public async Task SaveLessonProgress(int userId, int lessonId)
+        {
+            await _lessonRepository.SaveLessonProgress(userId, lessonId);
+        }
     }
 }

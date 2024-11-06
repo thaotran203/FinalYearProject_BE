@@ -103,5 +103,21 @@ namespace FinalYearProject_BE.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpGet("LessonProgress/{courseId}")]
+        public async Task<IActionResult> GetLessonsWithProgressForSudent(int courseId)
+        {
+            var userId = int.Parse(User.FindFirst("Id")?.Value);
+            var lessons = await _lessonService.GetLessonsWithProgressByCourseId(courseId, userId);
+            return Ok(lessons);
+        }
+
+        [HttpPost("SaveProgress")]
+        public async Task<IActionResult> SaveLessonProgress(int lessonId)
+        {
+            var userId = int.Parse(User.FindFirst("Id")?.Value);
+            await _lessonService.SaveLessonProgress(userId, lessonId);
+            return Ok();
+        }
     }
 }

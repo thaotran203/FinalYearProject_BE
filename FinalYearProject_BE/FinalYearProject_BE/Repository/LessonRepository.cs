@@ -82,5 +82,39 @@ namespace FinalYearProject_BE.Repository
             _context.Lessons.Remove(lesson);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<LessonProgressDTO>> GetLessonsWithProgressByCourseId(int userId, int courseId)
+        {
+            var lessons = await _context.Lessons
+                .Where(l => l.CourseId == courseId && !l.IsDeleted)
+                .OrderBy(l => l.Id)
+                .ToListAsync();
+
+            var progress = await _context.LessonProgresses
+                .Where(p => p.UserId == userId && lessons.Select(l => l.Id).Contains(p.LessonId))
+                .ToListAsync();
+
+            var lessonWithProgress = lessons.Select(l => new LessonProgressDTO
+            {
+                Id = l.Id,
+                Title = l.Title,
+                Description = l.Description,
+                IsCompleted = progress.Any(p => p.LessonId == l.Id && p.IsCompleted)
+            });
+
+            return lessonWithProgress;
+        }
+
+        public async Task SaveLessonProgress(int userId, int lessonId)
+        {
+            var lessonProgress = new LessonProgressModel
+            {
+                Id = userId,
+                LessonId = lessonId,
+                IsCompleted = true
+            };
+            await _context.LessonProgresses.AddAsync(lessonProgress);
+            await _context.SaveChangesAsync();
+        }
     }
 }
