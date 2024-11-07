@@ -86,6 +86,19 @@ namespace FinalYearProject_BE.Controllers
             return Ok(user);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserProfile()
+        {
+            var userId = int.Parse(User.FindFirst("Id")?.Value);
+            var user = await _userService.GetUserProfile(userId);
+            if (user == null)
+            {
+                return NotFound(new { message = "User not found" });
+            }
+
+            return Ok(user);
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UpdateUserDTO updateUserDTO)
         {
@@ -106,7 +119,7 @@ namespace FinalYearProject_BE.Controllers
             if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded.");
 
-            var updatedUser = await _cloudinaryService.UploadImage(file);
+            var updatedUser = await _cloudinaryService.UploadUserImage(file);
 
             var userId = int.Parse(User.FindFirst("Id")?.Value);
             if (userId == null)

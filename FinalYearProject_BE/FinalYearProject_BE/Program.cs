@@ -45,6 +45,11 @@ namespace FinalYearProject_BE
                 };
             });
 
+            builder.Services.AddCors(p => p.AddPolicy("MyCors", build =>
+            {
+                build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+            }));
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -97,6 +102,7 @@ namespace FinalYearProject_BE
             app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseCors("MyCors");
 
             app.MapControllers();
 

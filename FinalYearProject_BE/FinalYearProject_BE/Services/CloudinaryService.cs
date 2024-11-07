@@ -21,7 +21,7 @@ namespace FinalYearProject_BE.Services
             _cloudinary = new Cloudinary(account);
         }
 
-        public async Task<UpdateUserDTO> UploadImage(IFormFile file)
+        public async Task<UpdateUserDTO> UploadUserImage(IFormFile file)
         {
             if (file.Length > 0)
             {
@@ -37,6 +37,26 @@ namespace FinalYearProject_BE.Services
                 {
                     ImageUrl = uploadResult?.SecureUrl.ToString(),
                 };
+            }
+
+            throw new Exception("Invalid image file.");
+        }
+
+        public async Task<string> UploadCourseImage(IFormFile file)
+        {
+            if (file.Length > 0)
+            {
+                await using var stream = file.OpenReadStream();
+                var uploadParams = new ImageUploadParams
+                {
+                    File = new FileDescription(file.FileName, stream),
+                    Transformation = new Transformation().Crop("fill")
+                };
+
+                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                var courseImage = uploadResult?.SecureUrl.ToString();
+
+                return courseImage;
             }
 
             throw new Exception("Invalid image file.");

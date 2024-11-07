@@ -18,6 +18,9 @@ namespace FinalYearProject_BE.Models
         public string Description { get; set; }
 
         [Required]
+        public string CourseContent { get; set; }
+
+        [Required]
         public double Price { get; set; }
 
         [Required]
