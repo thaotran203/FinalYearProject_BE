@@ -111,6 +111,12 @@ namespace FinalYearProject_BE.Services
             return _mapper.Map<UserDTO>(user);
         }
 
+        public async Task<UserDTO> GetUserProfile(int id)
+        {
+            var user = await _userRepository.GetUserById(id);
+            return _mapper.Map<UserDTO>(user);
+        }
+
         public async Task UpdateUser(int id, UpdateUserDTO updateDto)
         {
             var user = await _userRepository.GetUserById(id);

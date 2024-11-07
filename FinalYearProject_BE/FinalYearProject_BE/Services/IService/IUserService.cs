@@ -9,6 +9,7 @@ namespace FinalYearProject_BE.Services.IService
         Task CreateUserForTeacher(RegisterUserDTO registerDto);
         Task<List<UserDTO>> GetAllUsers(string? searchString, int? roleId);
         Task<UserDTO> GetUserById(int id);
+        Task<UserDTO> GetUserProfile(int id);
         Task UpdateUser(int id, UpdateUserDTO updateDto);
         Task SoftDeleteUser(int id);
         Task HardDeleteUser(int id);

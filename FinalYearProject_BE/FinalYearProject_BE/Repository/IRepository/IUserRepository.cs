@@ -7,6 +7,7 @@ namespace FinalYearProject_BE.Repository.IRepository
         Task<UserModel> GetUserById(int id);
         Task<List<UserModel>> GetAllUsers(string searchString, int? roleId);
         Task<UserModel> GetUserByEmail(string email);
+        Task<UserModel> GetUserProfile(int id);
         Task CreateUser(UserModel user);
         Task UpdateUser(UserModel user);
         Task SoftDeleteUser(int id);

@@ -26,7 +26,7 @@ namespace FinalYearProject_BE.Controllers
 
         // POST: api/Category
         [HttpPost]
-        public async Task<IActionResult> CreateCategory(CourseDTO courseDto)
+        public async Task<IActionResult> CreateCategory([FromForm] CourseDTO courseDto)
         {
             if (string.IsNullOrWhiteSpace(courseDto.Title))
             {
@@ -56,7 +56,7 @@ namespace FinalYearProject_BE.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCourse(int id, CourseDTO courseDto)
+        public async Task<IActionResult> UpdateCourse(int id, [FromForm] CourseDTO courseDto)
         {
             try
             {

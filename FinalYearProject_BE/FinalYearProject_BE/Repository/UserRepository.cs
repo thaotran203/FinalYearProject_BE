@@ -50,6 +50,19 @@ namespace FinalYearProject_BE.Repository
             return user;
         }
 
+        public async Task<UserModel> GetUserProfile(int id)
+        {
+            var user = await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
+
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User not found.");
+            }
+            return user;
+        }
+
         public async Task<UserModel> GetUserByEmail(string email)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email && !u.IsDeleted);
