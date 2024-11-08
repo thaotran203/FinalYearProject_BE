@@ -13,5 +13,6 @@ namespace FinalYearProject_BE.DTOs
         public string? PhoneNumber { get; set; }
 
         public string? ImageUrl { get; set; }
+
     }
 }

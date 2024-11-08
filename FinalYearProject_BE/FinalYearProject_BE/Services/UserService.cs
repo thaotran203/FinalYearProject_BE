@@ -170,7 +170,7 @@ namespace FinalYearProject_BE.Services
             await _userRepository.RestoreUser(id);
         }
 
-        public async Task RequestPasswordReset(string email)
+        public async Task RequestResetPassword(string email)
         {
             var user = await _userRepository.GetUserByEmail(email);
             if (user == null || user.IsDeleted)

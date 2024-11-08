@@ -53,7 +53,7 @@ namespace FinalYearProject_BE.Controllers
             }
         }
 
-        [HttpPost("Register/teacher")]
+        [HttpPost("Register/Teacher")]
         public async Task<IActionResult> RegisterTeacher(RegisterUserDTO registerUserDTO)
         {
             try
@@ -86,10 +86,13 @@ namespace FinalYearProject_BE.Controllers
             return Ok(user);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("Profile")]
         public async Task<IActionResult> GetUserProfile()
         {
             var userId = int.Parse(User.FindFirst("Id")?.Value);
+            if (userId == null)
+                return Unauthorized("User ID not found in token.");
+
             var user = await _userService.GetUserProfile(userId);
             if (user == null)
             {
@@ -106,6 +109,24 @@ namespace FinalYearProject_BE.Controllers
             {
                 await _userService.UpdateUser(id, updateUserDTO);
                 return Ok(new { message = "User updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("UpdateAccount")]
+        public async Task<IActionResult> UpdateAccount(UpdateUserDTO updateUserDTO)
+        {
+            var userId = int.Parse(User.FindFirst("Id")?.Value);
+            if (userId == null)
+                return Unauthorized("User ID not found in token.");
+
+            try
+            {
+                await _userService.UpdateUser(userId, updateUserDTO);
+                return Ok(new { message = "Account updated successfully." });
             }
             catch (Exception ex)
             {
@@ -173,11 +194,15 @@ namespace FinalYearProject_BE.Controllers
         }
 
         [HttpPut("ChangePassword/{id}")]
-        public async Task<IActionResult> ChangePassword(int id, UpdatePasswordDTO updatePasswordDTO)
+        public async Task<IActionResult> ChangePassword(UpdatePasswordDTO updatePasswordDTO)
         {
+            var userId = int.Parse(User.FindFirst("Id")?.Value);
+            if (userId == null)
+                return Unauthorized("User ID not found in token.");
+
             try
             {
-                await _userService.UpdatePassword(id, updatePasswordDTO);
+                await _userService.UpdatePassword(userId, updatePasswordDTO);
                 return Ok(new { message = "Password updated successfully" });
             }
             catch (Exception ex)
@@ -187,7 +212,7 @@ namespace FinalYearProject_BE.Controllers
         }
 
         [HttpPost("RequestResetPassword")]
-        public async Task<IActionResult> RequestPasswordReset(string email)
+        public async Task<IActionResult> RequestResetPassword(string email)
         {
             if (string.IsNullOrEmpty(email))
             {
@@ -196,7 +221,7 @@ namespace FinalYearProject_BE.Controllers
 
             try
             {
-                await _userService.RequestPasswordReset(email);
+                await _userService.RequestResetPassword(email);
                 return Ok("Password reset link was sent to your email");
             }
             catch (Exception ex)
