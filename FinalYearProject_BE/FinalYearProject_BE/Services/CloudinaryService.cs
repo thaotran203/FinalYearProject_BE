@@ -2,6 +2,7 @@
 using CloudinaryDotNet.Actions;
 using FinalYearProject_BE.DTOs;
 using FinalYearProject_BE.Services.IService;
+using FinalYearProject_BE.Settings;
 using Microsoft.Extensions.Options;
 
 namespace FinalYearProject_BE.Services

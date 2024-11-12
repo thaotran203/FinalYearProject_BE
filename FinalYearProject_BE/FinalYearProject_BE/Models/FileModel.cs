@@ -11,11 +11,14 @@ namespace FinalYearProject_BE.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public string? FileUrl { get; set; }
+        [Required]
+        public string FileName { get; set; }
 
-        public string? ImageUrl { get; set; }
+        [Required]
+        public string FileUrl { get; set; }
 
-        public string? VideoUrl { get; set; }
+        [Required]
+        public string FileType { get; set; }
 
         [Required]
         [ForeignKey("Lesson")]

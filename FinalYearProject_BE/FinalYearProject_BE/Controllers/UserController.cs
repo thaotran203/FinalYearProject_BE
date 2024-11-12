@@ -193,7 +193,7 @@ namespace FinalYearProject_BE.Controllers
             }
         }
 
-        [HttpPut("ChangePassword/{id}")]
+        [HttpPut("ChangePassword")]
         public async Task<IActionResult> ChangePassword(UpdatePasswordDTO updatePasswordDTO)
         {
             var userId = int.Parse(User.FindFirst("Id")?.Value);

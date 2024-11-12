@@ -1,4 +1,4 @@
-﻿namespace FinalYearProject_BE
+﻿namespace FinalYearProject_BE.Settings
 {
     public class CloudinarySettings
     {
