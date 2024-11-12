@@ -14,7 +14,7 @@ namespace FinalYearProject_BE.Services.IService
         Task SoftDeleteUser(int id);
         Task HardDeleteUser(int id);
         Task RestoreUser(int id);
-        Task RequestPasswordReset(string email);
+        Task RequestResetPassword(string email);
         Task ResetPassword(ResetPasswordDTO resetPasswordDto);
         Task UpdatePassword(int userId, UpdatePasswordDTO updatePasswordDto);
         Task<LoginResponseDTO> RefreshJwtToken(string refreshToken);

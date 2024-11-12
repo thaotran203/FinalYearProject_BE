@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using FinalYearProject_BE.Settings;
 
 namespace FinalYearProject_BE
 {
@@ -57,6 +58,7 @@ namespace FinalYearProject_BE
             builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddScoped<IPasswordHasher<UserModel>, PasswordHasher<UserModel>>();
             builder.Services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
+            builder.Services.Configure<GoogleDriveSettings>(configuration.GetSection("GoogleDriveSettings"));
 
 
             // Dang ky cac service va repository
@@ -64,15 +66,19 @@ namespace FinalYearProject_BE
             builder.Services.AddScoped<ICourseRepository, CourseRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<ILessonRepository, LessonRepository>();
+            builder.Services.AddScoped<IFileRepository, FileRepository>();
             builder.Services.AddScoped<IUserTokenRepository, UserTokenRepository>();
 
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICourseService, CourseService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ILessonService, LessonService>();
+            builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
             builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+            builder.Services.AddScoped<IGoogleDriveService, GoogleDriveService>();
+
 
 
             builder.Services.ConfigureApplicationCookie(options =>
