@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using FinalYearProject_BE.Settings;
+using Microsoft.OpenApi.Models;
 
 namespace FinalYearProject_BE
 {
@@ -46,6 +47,35 @@ namespace FinalYearProject_BE
                 };
             });
 
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Enter JWT Bearer token"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
+            });
+
+
             builder.Services.AddCors(p => p.AddPolicy("MyCors", build =>
             {
                 build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
@@ -59,7 +89,10 @@ namespace FinalYearProject_BE
             builder.Services.AddScoped<IPasswordHasher<UserModel>, PasswordHasher<UserModel>>();
             builder.Services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
             builder.Services.Configure<GoogleDriveSettings>(configuration.GetSection("GoogleDriveSettings"));
-
+            builder.Services.Configure<VnPaySettings>(builder.Configuration.GetSection("VnPaySettings"));
+            builder.Services.Configure<ZaloPaySettings>(builder.Configuration.GetSection("ZaloPaySettings"));
+            builder.Services.AddTransient<VnPayService>();
+            builder.Services.AddTransient<ZaloPayService>();
 
             // Dang ky cac service va repository
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -68,6 +101,7 @@ namespace FinalYearProject_BE
             builder.Services.AddScoped<ILessonRepository, LessonRepository>();
             builder.Services.AddScoped<IFileRepository, FileRepository>();
             builder.Services.AddScoped<IUserTokenRepository, UserTokenRepository>();
+            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICourseService, CourseService>();
@@ -78,6 +112,9 @@ namespace FinalYearProject_BE
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
             builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
             builder.Services.AddScoped<IGoogleDriveService, GoogleDriveService>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<IVnPayService, VnPayService>();
+            builder.Services.AddScoped<IZaloPayService, ZaloPayService>();
 
 
 
@@ -109,6 +146,7 @@ namespace FinalYearProject_BE
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseCors("MyCors");
+            app.UseMiddleware<JwtMiddleware>();
 
             app.MapControllers();
 

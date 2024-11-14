@@ -109,7 +109,7 @@ namespace FinalYearProject_BE.Repository
         {
             var lessonProgress = new LessonProgressModel
             {
-                Id = userId,
+                UserId = userId,
                 LessonId = lessonId,
                 IsCompleted = true
             };

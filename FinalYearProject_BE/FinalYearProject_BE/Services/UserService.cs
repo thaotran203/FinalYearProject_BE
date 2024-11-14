@@ -6,6 +6,7 @@ using FinalYearProject_BE.Services.IService;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json.Linq;
 using NuGet.Common;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace FinalYearProject_BE.Services
 {
@@ -61,9 +62,12 @@ namespace FinalYearProject_BE.Services
                 throw new UnauthorizedAccessException("Wrong password! Please enter again.");
             }
 
+            user.TokenVersion++;
+            await _userRepository.UpdateUser(user);
+
             var jwtToken = _jwtTokenService.GenerateToken(user);
             var refreshToken = Guid.NewGuid().ToString();
-            var refreshTokenExpiration = DateTime.UtcNow.AddDays(30);
+            var refreshTokenExpiration = DateTime.UtcNow.AddDays(10);
 
             var userToken = new UserTokenModel
             {
@@ -256,14 +260,27 @@ namespace FinalYearProject_BE.Services
             };
         }
 
-        public async Task Logout(string refreshToken)
+        public async Task Logout(int userId, string refreshToken)
         {
-            var existingToken = await _userTokenRepository.GetRefreshToken(refreshToken);
-
-            if (existingToken != null)
+            var existingRefreshToken = await _userTokenRepository.GetRefreshToken(refreshToken);
+            if (existingRefreshToken != null)
             {
-                await _userTokenRepository.DeleteToken(existingToken);
+                await _userTokenRepository.DeleteToken(existingRefreshToken);
             }
+
+            var user = await _userRepository.GetUserById(userId);
+            if (user != null)
+            {
+                user.TokenVersion++;
+                await _userRepository.UpdateUser(user);
+            }
+        }
+
+        private DateTime? GetJwtExpirationDate(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+            return jsonToken?.ValidTo;
         }
     }
 }

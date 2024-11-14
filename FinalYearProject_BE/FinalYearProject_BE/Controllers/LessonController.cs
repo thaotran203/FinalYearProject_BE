@@ -108,14 +108,25 @@ namespace FinalYearProject_BE.Controllers
         public async Task<IActionResult> GetLessonsWithProgressForSudent(int courseId)
         {
             var userId = int.Parse(User.FindFirst("Id")?.Value);
+            if (userId == null)
+                return Unauthorized("User ID not found in token.");
+
             var lessons = await _lessonService.GetLessonsWithProgressByCourseId(courseId, userId);
             return Ok(lessons);
         }
 
-        [HttpPost("SaveProgress")]
+        [HttpPost("SaveProgress/{lessonId}")]
         public async Task<IActionResult> SaveLessonProgress(int lessonId)
         {
+            if (lessonId == 0)
+            {
+                return BadRequest("Invalid lessonId.");
+            }
+
             var userId = int.Parse(User.FindFirst("Id")?.Value);
+            if (userId == null)
+                return Unauthorized("User ID not found in token.");
+
             await _lessonService.SaveLessonProgress(userId, lessonId);
             return Ok();
         }

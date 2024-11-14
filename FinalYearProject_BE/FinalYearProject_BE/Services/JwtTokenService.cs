@@ -29,11 +29,11 @@ namespace FinalYearProject_BE.Services
                     new Claim(ClaimTypes.Name, user.FullName),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Role, GetRole(user.RoleId)),
-
-                    new Claim("TokenId", Guid.NewGuid().ToString())
+                    new Claim("TokenId", Guid.NewGuid().ToString()),
+                    new Claim("TokenVersion", user.TokenVersion.ToString()),
                 }),
 
-                Expires = DateTime.Now.AddDays(2),
+                Expires = DateTime.Now.AddMinutes(30),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes), SecurityAlgorithms.HmacSha256)
             };
 

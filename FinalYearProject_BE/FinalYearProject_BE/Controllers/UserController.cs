@@ -259,10 +259,15 @@ namespace FinalYearProject_BE.Controllers
             return Ok(new { token });
         }
 
-        [HttpPost("logout")]
+        [HttpPost("Logout")]
         public async Task<IActionResult> Logout(string refreshToken)
         {
-            await _userService.Logout(refreshToken);
+            var userId = int.Parse(User.FindFirst("Id")?.Value);
+            if (userId == null)
+                return Unauthorized("User ID not found in token.");
+
+            await _userService.Logout(userId, refreshToken);
+
             return Ok("Logged out successfully.");
         }
     }

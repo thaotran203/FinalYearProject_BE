@@ -18,6 +18,6 @@ namespace FinalYearProject_BE.Services.IService
         Task ResetPassword(ResetPasswordDTO resetPasswordDto);
         Task UpdatePassword(int userId, UpdatePasswordDTO updatePasswordDto);
         Task<LoginResponseDTO> RefreshJwtToken(string refreshToken);
-        Task Logout(string refreshToken);
+        Task Logout(int userId, string refreshToken);
     }
 }
