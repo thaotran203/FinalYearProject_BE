@@ -34,6 +34,9 @@ namespace FinalYearProject_BE.Models
         [ValidateNever]
         public RoleModel Role { get; set; }
 
+        [Required]
+        public int TokenVersion { get; set; }
+
         [NotMapped]
         [ValidateNever]
         public List<EnrollmentModel> Enrollments { get; set; }

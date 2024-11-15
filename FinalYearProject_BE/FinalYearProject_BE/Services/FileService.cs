@@ -21,6 +21,11 @@ namespace FinalYearProject_BE.Services
 
         public async Task<FileResponseDTO> CreateFile(FileUploadDTO fileDto)
         {
+            if (!IsValidFileType(fileDto.File, fileDto.FileType))
+            {
+                throw new ArgumentException($"Invalid file type for {fileDto.FileType}. Please upload a valid file.");
+            }
+
             var fileUrl = await _googleDriveService.UploadFileToDrive(fileDto.File, fileDto.FileName);
 
             var fileModel = new FileModel
@@ -52,6 +57,11 @@ namespace FinalYearProject_BE.Services
             var file = await _fileRepository.GetFileById(fileId);
             if (file == null) throw new Exception("File not found.");
 
+            if (!IsValidFileType(fileDto.File, fileDto.FileType))
+            {
+                throw new ArgumentException($"Invalid file type for {fileDto.FileType}. Please upload a valid file.");
+            }
+
             await _googleDriveService.DeleteFileFromDrive(file.FileUrl);
 
             var newFileUrl = await _googleDriveService.UploadFileToDrive(fileDto.File, fileDto.FileName);
@@ -71,6 +81,20 @@ namespace FinalYearProject_BE.Services
 
             await _googleDriveService.DeleteFileFromDrive(file.FileUrl);
             await _fileRepository.DeleteFile(fileId);
+        }
+
+        private bool IsValidFileType(IFormFile file, string fileType)
+        {
+            var validExtensions = fileType.ToLower() switch
+            {
+                "image" => new[] { ".png", ".jpg", ".jpeg" },
+                "video" => new[] { ".mp4" },
+                "file" => new[] { ".docx", ".pdf" },
+                _ => Array.Empty<string>()
+            };
+
+            var fileExtension = Path.GetExtension(file.FileName).ToLower();
+            return validExtensions.Contains(fileExtension);
         }
     }
 }
