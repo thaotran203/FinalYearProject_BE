@@ -26,7 +26,7 @@ namespace FinalYearProject_BE.Controllers
 
         // POST: api/Category
         [HttpPost]
-        public async Task<IActionResult> CreateCategory([FromForm] CourseDTO courseDto)
+        public async Task<IActionResult> CreateCourse([FromForm] CourseDTO courseDto)
         {
             if (string.IsNullOrWhiteSpace(courseDto.Title))
             {
@@ -103,7 +103,7 @@ namespace FinalYearProject_BE.Controllers
             try
             {
                 await _courseService.HardDeleteCourse(id);
-                return Ok("Category was permanently deleted.");
+                return Ok("Course was permanently deleted.");
             }
             catch (KeyNotFoundException ex)
             {

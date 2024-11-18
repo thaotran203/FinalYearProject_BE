@@ -4,21 +4,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinalYearProject_BE.Models
 {
-    [Table("File")]
-    public class FileModel
+    [Table("LessonVideo")]
+    public class LessonVideoModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
-        public string FileName { get; set; }
-
-        [Required]
-        public string FileUrl { get; set; }
-
-        [Required]
-        public string FileType { get; set; }
+        public string VideoUrl { get; set; }
 
         [Required]
         [ForeignKey("Lesson")]

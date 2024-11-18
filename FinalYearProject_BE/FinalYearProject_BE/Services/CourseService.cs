@@ -30,6 +30,11 @@ namespace FinalYearProject_BE.Services
                 throw new InvalidOperationException("A course with the same title already exists.");
             }
 
+            if (!IsValidImageFileType(courseDto.Image))
+            {
+                throw new InvalidOperationException("Invalid image file type. Please choose again.");
+            }
+
             if (courseDto.Image == null || courseDto.Image.Length == 0)
             {
                 throw new Exception("No file uploaded.");
@@ -63,11 +68,23 @@ namespace FinalYearProject_BE.Services
 
         public async Task UpdateCourse(int id, CourseDTO courseDto)
         {
+            if (await _courseRepository.ExistsByTitle(courseDto.Title))
+            {
+                throw new InvalidOperationException("A course with the same title already exists.");
+            }
+
             var course = await _courseRepository.GetCourseById(id);
 
             if (course == null)
             {
                 throw new Exception("Course not found.");
+            }
+
+            await _cloudinaryService.DeleteFile(course.ImageLink);
+
+            if (!IsValidImageFileType(courseDto.Image))
+            {
+                throw new InvalidOperationException("Invalid image file type. Please choose again.");
             }
 
             if (courseDto.Image == null || courseDto.Image.Length == 0)
@@ -99,6 +116,14 @@ namespace FinalYearProject_BE.Services
         
         public async Task HardDeleteCourse(int id)
         {
+            var course = await _courseRepository.GetCourseById(id);
+
+            if (course == null)
+            {
+                throw new Exception("Course not found.");
+            }
+
+            await _cloudinaryService.DeleteFile(course.ImageLink);
             await _courseRepository.HardDeleteCourse(id);
         }
 
@@ -106,6 +131,15 @@ namespace FinalYearProject_BE.Services
         {
             var courses = await _courseRepository.GetCoursesByCategoryId(categoryId);
             return _mapper.Map<List<CourseResponseDTO>>(courses);
+        }
+
+        private bool IsValidImageFileType(IFormFile image)
+        {
+            var extension = Path.GetExtension(image.FileName)?.ToLower();
+
+            var allowedImageExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp" };
+
+            return allowedImageExtensions.Contains(extension);
         }
     }
 }

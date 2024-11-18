@@ -14,7 +14,7 @@ namespace FinalYearProject_BE
             CreateMap<UpdateUserDTO, UserModel>().ReverseMap();
             CreateMap<UserDTO, UserModel>().ReverseMap();
             CreateMap<LessonDTO, LessonModel>().ReverseMap();
-            CreateMap<FileResponseDTO, FileModel>().ReverseMap();
+            CreateMap<VideoResponseDTO, LessonVideoModel>().ReverseMap();
         }
     }
 }

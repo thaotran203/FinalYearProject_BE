@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinalYearProject_BE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241106164147_DbInit")]
+    [Migration("20241117220707_DbInit")]
     partial class DbInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -138,33 +138,6 @@ namespace FinalYearProject_BE.Migrations
                     b.ToTable("Enrollment");
                 });
 
-            modelBuilder.Entity("FinalYearProject_BE.Models.FileModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("FileUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("LessonId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("VideoUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LessonId");
-
-                    b.ToTable("File");
-                });
-
             modelBuilder.Entity("FinalYearProject_BE.Models.GradeModel", b =>
                 {
                     b.Property<int>("Id")
@@ -250,6 +223,28 @@ namespace FinalYearProject_BE.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("LessonProgress");
+                });
+
+            modelBuilder.Entity("FinalYearProject_BE.Models.LessonVideoModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("LessonId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("VideoUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LessonId");
+
+                    b.ToTable("LessonVideo");
                 });
 
             modelBuilder.Entity("FinalYearProject_BE.Models.MessageModel", b =>
@@ -442,6 +437,9 @@ namespace FinalYearProject_BE.Migrations
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
+                    b.Property<int>("TokenVersion")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("RoleId");
@@ -518,17 +516,6 @@ namespace FinalYearProject_BE.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FinalYearProject_BE.Models.FileModel", b =>
-                {
-                    b.HasOne("FinalYearProject_BE.Models.LessonModel", "Lesson")
-                        .WithMany()
-                        .HasForeignKey("LessonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Lesson");
-                });
-
             modelBuilder.Entity("FinalYearProject_BE.Models.GradeModel", b =>
                 {
                     b.HasOne("FinalYearProject_BE.Models.TestModel", "Test")
@@ -576,6 +563,17 @@ namespace FinalYearProject_BE.Migrations
                     b.Navigation("Lesson");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FinalYearProject_BE.Models.LessonVideoModel", b =>
+                {
+                    b.HasOne("FinalYearProject_BE.Models.LessonModel", "Lesson")
+                        .WithMany()
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lesson");
                 });
 
             modelBuilder.Entity("FinalYearProject_BE.Models.MessageModel", b =>

@@ -15,7 +15,7 @@ namespace FinalYearProject_BE.Data
         public DbSet<CategoryModel> Categories { get; set; }
         public DbSet<CourseModel> Courses { get; set; }
         public DbSet<EnrollmentModel> Enrollments { get; set; }
-        public DbSet<FileModel> Files { get; set; }
+        public DbSet<LessonVideoModel> LessonVideos { get; set; }
         public DbSet<GradeModel> Grades { get; set; }
         public DbSet<LessonModel> Lessons { get; set; }
         public DbSet<MessageModel> Messages { get; set; }
