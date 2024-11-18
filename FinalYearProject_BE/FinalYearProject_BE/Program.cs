@@ -88,33 +88,31 @@ namespace FinalYearProject_BE
             builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddScoped<IPasswordHasher<UserModel>, PasswordHasher<UserModel>>();
             builder.Services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
-            builder.Services.Configure<GoogleDriveSettings>(configuration.GetSection("GoogleDriveSettings"));
-            builder.Services.Configure<VnPaySettings>(builder.Configuration.GetSection("VnPaySettings"));
-            builder.Services.Configure<ZaloPaySettings>(builder.Configuration.GetSection("ZaloPaySettings"));
-            builder.Services.AddTransient<VnPayService>();
-            builder.Services.AddTransient<ZaloPayService>();
+            //builder.Services.Configure<VnPaySettings>(builder.Configuration.GetSection("VnPaySettings"));
+            //builder.Services.Configure<ZaloPaySettings>(builder.Configuration.GetSection("ZaloPaySettings"));
+            //builder.Services.AddTransient<VnPayService>();
+            //builder.Services.AddTransient<ZaloPayService>();
 
             // Dang ky cac service va repository
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<ICourseRepository, CourseRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<ILessonRepository, LessonRepository>();
-            builder.Services.AddScoped<IFileRepository, FileRepository>();
+            builder.Services.AddScoped<ILessonVideoRepository, LessonVideoRepository>();
             builder.Services.AddScoped<IUserTokenRepository, UserTokenRepository>();
-            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            //builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICourseService, CourseService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ILessonService, LessonService>();
-            builder.Services.AddScoped<IFileService, FileService>();
+            builder.Services.AddScoped<ILessonVideoService, LessonVideoService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
             builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
-            builder.Services.AddScoped<IGoogleDriveService, GoogleDriveService>();
-            builder.Services.AddScoped<IPaymentService, PaymentService>();
-            builder.Services.AddScoped<IVnPayService, VnPayService>();
-            builder.Services.AddScoped<IZaloPayService, ZaloPayService>();
+            //builder.Services.AddScoped<IPaymentService, PaymentService>();
+            //builder.Services.AddScoped<IVnPayService, VnPayService>();
+            //builder.Services.AddScoped<IZaloPayService, ZaloPayService>();
 
 
 

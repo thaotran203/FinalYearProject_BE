@@ -35,7 +35,7 @@ namespace FinalYearProject_BE.Models
 
         [NotMapped]
         [ValidateNever]
-        public List<FileModel> Files { get; set; }
+        public List<LessonVideoModel> LessonVideos { get; set; }
 
         [NotMapped]
         [ValidateNever]

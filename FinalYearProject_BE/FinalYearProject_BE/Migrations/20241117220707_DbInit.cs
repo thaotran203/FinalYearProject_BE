@@ -74,7 +74,8 @@ namespace FinalYearProject_BE.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false)
+                    RoleId = table.Column<int>(type: "int", nullable: false),
+                    TokenVersion = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -94,7 +95,7 @@ namespace FinalYearProject_BE.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CourseId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -221,28 +222,6 @@ namespace FinalYearProject_BE.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "File",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FileUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    VideoUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LessonId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_File", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_File_Lesson_LessonId",
-                        column: x => x.LessonId,
-                        principalTable: "Lesson",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "LessonProgress",
                 columns: table => new
                 {
@@ -265,6 +244,26 @@ namespace FinalYearProject_BE.Migrations
                         name: "FK_LessonProgress_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LessonVideo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    VideoUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LessonId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LessonVideo", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LessonVideo_Lesson_LessonId",
+                        column: x => x.LessonId,
+                        principalTable: "Lesson",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -410,11 +409,6 @@ namespace FinalYearProject_BE.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_File_LessonId",
-                table: "File",
-                column: "LessonId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Grade_TestId",
                 table: "Grade",
                 column: "TestId");
@@ -438,6 +432,11 @@ namespace FinalYearProject_BE.Migrations
                 name: "IX_LessonProgress_UserId",
                 table: "LessonProgress",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LessonVideo_LessonId",
+                table: "LessonVideo",
+                column: "LessonId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Message_CourseId",
@@ -504,13 +503,13 @@ namespace FinalYearProject_BE.Migrations
                 name: "Enrollment");
 
             migrationBuilder.DropTable(
-                name: "File");
-
-            migrationBuilder.DropTable(
                 name: "Grade");
 
             migrationBuilder.DropTable(
                 name: "LessonProgress");
+
+            migrationBuilder.DropTable(
+                name: "LessonVideo");
 
             migrationBuilder.DropTable(
                 name: "Message");
