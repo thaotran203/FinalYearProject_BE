@@ -15,6 +15,9 @@ namespace FinalYearProject_BE.Models
         public DateTime PaymentDate { get; set; }
 
         [Required]
+        public double Amount { get; set; }
+
+        [Required]
         [ForeignKey("User")]
         public int UserId { get; set; }
         [ValidateNever]
