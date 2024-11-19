@@ -12,5 +12,6 @@ namespace FinalYearProject_BE.DTOs
         public double Price { get; set; }
         public int CategoryId { get; set; }
         public int InstructorId { get; set; }
+        public string TeacherName { get; set; }
     }
 }

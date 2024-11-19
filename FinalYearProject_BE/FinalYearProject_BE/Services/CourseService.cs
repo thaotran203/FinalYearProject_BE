@@ -73,7 +73,7 @@ namespace FinalYearProject_BE.Services
                 throw new InvalidOperationException("A course with the same title already exists.");
             }
 
-            var course = await _courseRepository.GetCourseById(id);
+            var course = await _courseRepository.GetCourseEntityById(id);
 
             if (course == null)
             {

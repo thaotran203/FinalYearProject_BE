@@ -1,4 +1,5 @@
 ﻿using FinalYearProject_BE.Data;
+using FinalYearProject_BE.DTOs;
 using FinalYearProject_BE.Models;
 using FinalYearProject_BE.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
@@ -22,14 +23,60 @@ namespace FinalYearProject_BE.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<CourseModel>> GetAllCourses()
+        public async Task<List<CourseResponseDTO>> GetAllCourses()
         {
-            return await _context.Courses
-                .Where(c => c.IsDeleted == false)
+            var courses = await _context.Courses
+                .Where(c => !c.IsDeleted)
+                .Join(
+                    _context.Users,
+                    course => course.InstructorId,
+                    user => user.Id,
+                    (course, user) => new CourseResponseDTO
+                    {
+                        Id = course.Id,
+                        Title = course.Title,
+                        Description = course.Description,
+                        CourseContent = course.CourseContent,
+                        ImageLink = course.ImageLink,
+                        Price = course.Price,
+                        CategoryId = course.CategoryId,
+                        InstructorId = course.InstructorId,
+                        TeacherName = user.FullName
+                    }
+                )
                 .ToListAsync();
+
+            return courses;
         }
 
-        public async Task<CourseModel> GetCourseById(int id)
+        public async Task<CourseResponseDTO> GetCourseById(int id)
+        {
+            var course = await _context.Courses
+                .Where(c => !c.IsDeleted && c.Id == id)
+                .Join(
+                    _context.Users,
+                    course => course.InstructorId,
+                    user => user.Id,
+                    (course, user) => new CourseResponseDTO
+                    {
+                        Id = course.Id,
+                        Title = course.Title,
+                        Description = course.Description,
+                        CourseContent = course.CourseContent,
+                        ImageLink = course.ImageLink,
+                        Price = course.Price,
+                        CategoryId = course.CategoryId,
+                        InstructorId = course.InstructorId,
+                        TeacherName = user.FullName
+                    }
+                )
+                .FirstOrDefaultAsync();
+
+            if (course == null) throw new KeyNotFoundException("Course not found.");
+            return course;
+        }
+
+        public async Task<CourseModel> GetCourseEntityById(int id)
         {
             var course = await _context.Courses
                 .Where(c => c.IsDeleted == false && c.Id == id)
@@ -47,7 +94,10 @@ namespace FinalYearProject_BE.Repository
 
         public async Task SoftDeleteCourse(int id)
         {
-            var course = await GetCourseById(id);
+            var course = await _context.Courses
+                .Where(c => c.IsDeleted == false && c.Id == id)
+                .FirstOrDefaultAsync();
+            
             course.IsDeleted = true;
             _context.Courses.Update(course);
             await _context.SaveChangesAsync();
