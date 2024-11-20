@@ -13,5 +13,6 @@ namespace FinalYearProject_BE.DTOs
         public int CategoryId { get; set; }
         public int InstructorId { get; set; }
         public string TeacherName { get; set; }
+        public string TeacherImageUrl { get; set; } 
     }
 }
