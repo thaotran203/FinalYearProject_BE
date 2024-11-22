@@ -201,7 +201,7 @@ namespace FinalYearProject_BE.Services
 
             await _userTokenRepository.AddToken(userToken);
 
-            var resetLink = $"{_configuration["AppUrl"]}/reset-password?token={resetToken}";
+            var resetLink = $"{_configuration["FrontendUrl"]}/reset-password?token={resetToken}";
             await _emailService.SendPasswordResetEmail(user.Email, resetLink);
         }
 
