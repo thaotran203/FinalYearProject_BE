@@ -57,13 +57,13 @@ namespace FinalYearProject_BE.Services
         public async Task<List<CourseResponseDTO>> GetAllCourses()
         {
             var courses = await _courseRepository.GetAllCourses();
-            return _mapper.Map<List<CourseResponseDTO>>(courses);
+            return courses;
         }
 
         public async Task<CourseResponseDTO> GetCourseById(int id)
         {
             var course = await _courseRepository.GetCourseById(id);
-            return _mapper.Map<CourseResponseDTO>(course);
+            return course;
         }
 
         public async Task UpdateCourse(int id, CourseDTO courseDto)

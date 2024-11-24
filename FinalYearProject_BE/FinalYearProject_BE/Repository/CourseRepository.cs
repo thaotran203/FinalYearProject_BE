@@ -41,7 +41,8 @@ namespace FinalYearProject_BE.Repository
                         Price = course.Price,
                         CategoryId = course.CategoryId,
                         InstructorId = course.InstructorId,
-                        TeacherName = user.FullName
+                        TeacherName = user.FullName,
+                        TeacherImageUrl = user.ImageUrl
                     }
                 )
                 .ToListAsync();
@@ -67,7 +68,8 @@ namespace FinalYearProject_BE.Repository
                         Price = course.Price,
                         CategoryId = course.CategoryId,
                         InstructorId = course.InstructorId,
-                        TeacherName = user.FullName
+                        TeacherName = user.FullName,
+                        TeacherImageUrl = user.ImageUrl
                     }
                 )
                 .FirstOrDefaultAsync();

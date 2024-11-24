@@ -22,7 +22,7 @@ namespace FinalYearProject_BE.Repository
 
         public async Task<List<UserModel>> GetAllUsers(string searchString, int? roleId)
         {
-            var users = _context.Users.AsQueryable().Where(u => u.IsDeleted ==  false);
+            var users = _context.Users.AsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
             {
