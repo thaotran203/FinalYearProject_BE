@@ -23,9 +23,7 @@ namespace FinalYearProject_BE.Repository
 
         public async Task<List<CategoryModel>> GetAllCategories()
         {
-            return await _context.Categories
-                .Where(c => c.IsDeleted == false)
-                .ToListAsync();
+            return await _context.Categories.ToListAsync();
         }
 
         public async Task<CategoryModel> GetCategoryById(int id)
