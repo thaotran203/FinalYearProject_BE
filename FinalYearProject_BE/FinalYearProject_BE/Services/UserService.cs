@@ -78,11 +78,15 @@ namespace FinalYearProject_BE.Services
             };
 
             await _userTokenRepository.AddToken(userToken);
+
+            var userRole = user.Role?.Name ?? "Unknown";
+
             return new LoginResponseDTO
             {
                 JwtToken = jwtToken,
                 RefreshToken = refreshToken,
-                RefreshTokenExpiration = refreshTokenExpiration
+                RefreshTokenExpiration = refreshTokenExpiration,
+                UserRole = userRole
             };
         }
 
@@ -113,6 +117,16 @@ namespace FinalYearProject_BE.Services
         {
             var user = await _userRepository.GetUserById(id);
             return _mapper.Map<UserDTO>(user);
+        }
+
+        public async Task<List<UserDTO>> GetUsersByRole(string roleName)
+        {
+            var users = await _userRepository.GetUsersByRole(roleName);
+            return users.Select(u => new UserDTO
+            {
+                Id = u.Id,
+                FullName = u.FullName
+            }).ToList();
         }
 
         public async Task<UserDTO> GetUserProfile(int id)

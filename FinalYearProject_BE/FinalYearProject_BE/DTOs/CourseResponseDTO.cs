@@ -10,7 +10,9 @@ namespace FinalYearProject_BE.DTOs
         public string CourseContent { get; set; }
         public string ImageLink { get; set; }
         public double Price { get; set; }
+        public bool IsDeleted { get; set; }
         public int CategoryId { get; set; }
+        public string CategoryName { get; set; }
         public int InstructorId { get; set; }
         public string TeacherName { get; set; }
         public string TeacherImageUrl { get; set; }

@@ -55,6 +55,24 @@ namespace FinalYearProject_BE.Controllers
             return Ok(course);
         }
 
+        [HttpGet("GetAllCoursesForAdmin")]
+        public async Task<IActionResult> GetAllCoursesForAdmin()
+        {
+            var courses = await _courseService.GetAllCourseForAdmin();
+            return Ok(courses);
+        }
+
+        [HttpGet("GetCoursesByInstructor")]
+        public async Task<IActionResult> GetCoursesByInstructor()
+        {
+            var teacherId = int.Parse(User.FindFirst("Id")?.Value);
+            if (teacherId == null)
+                return Unauthorized("User ID not found in token.");
+
+            var courses = await _courseService.GetCoursesByInstructorId(teacherId);
+            return Ok(courses);
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCourse(int id, [FromForm] CourseDTO courseDto)
         {

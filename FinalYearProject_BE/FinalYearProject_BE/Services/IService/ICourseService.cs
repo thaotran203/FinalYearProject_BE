@@ -1,4 +1,5 @@
 ﻿using FinalYearProject_BE.DTOs;
+using FinalYearProject_BE.Models;
 
 namespace FinalYearProject_BE.Services.IService
 {
@@ -7,6 +8,8 @@ namespace FinalYearProject_BE.Services.IService
         Task CreateCourse(CourseDTO courseDto);
         Task<List<CourseResponseDTO>> GetAllCourses();
         Task<CourseResponseDTO> GetCourseById(int id);
+        Task<List<CourseResponseDTO>> GetAllCourseForAdmin();
+        Task<List<CourseResponseDTO>> GetCoursesByInstructorId(int teacherId);
         Task UpdateCourse(int id, CourseDTO courseDto);
         Task SoftDeleteCourse(int id);
         Task RestoreCourse(int id);

@@ -9,6 +9,8 @@ namespace FinalYearProject_BE.Repository.IRepository
         Task<List<CourseResponseDTO>> GetAllCourses();
         Task<CourseResponseDTO> GetCourseById(int id);
         Task<CourseModel> GetCourseEntityById(int id);
+        Task<List<CourseResponseDTO>> GetAllCourseForAdmin();
+        Task<List<CourseResponseDTO>> GetCoursesByInstructorId(int teacherId);
         Task UpdateCourse(CourseModel course);
         Task SoftDeleteCourse(int id);
         Task RestoreCourse(int id);

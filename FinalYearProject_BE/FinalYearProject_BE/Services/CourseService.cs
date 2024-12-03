@@ -104,6 +104,16 @@ namespace FinalYearProject_BE.Services
             await _courseRepository.UpdateCourse(course);
         }
 
+        public async Task<List<CourseResponseDTO>> GetAllCourseForAdmin()
+        {
+            return await _courseRepository.GetAllCourseForAdmin();
+        }
+
+        public async Task<List<CourseResponseDTO>> GetCoursesByInstructorId(int teacherId)
+        {
+            return await _courseRepository.GetCoursesByInstructorId(teacherId);
+        }
+
         public async Task SoftDeleteCourse(int id)
         {
             await _courseRepository.SoftDeleteCourse(id);

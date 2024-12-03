@@ -86,6 +86,13 @@ namespace FinalYearProject_BE.Controllers
             return Ok(user);
         }
 
+        [HttpGet("GetAllTeachers")]
+        public async Task<IActionResult> GetAllTeachers()
+        {
+            var teachers = await _userService.GetUsersByRole("Teacher");
+            return Ok(teachers);
+        }
+
         [HttpGet("Profile")]
         public async Task<IActionResult> GetUserProfile()
         {

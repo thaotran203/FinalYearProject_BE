@@ -78,6 +78,66 @@ namespace FinalYearProject_BE.Repository
             return course;
         }
 
+        public async Task<List<CourseResponseDTO>> GetAllCourseForAdmin()
+        {
+            var courses = await _context.Courses
+                .Join(
+                    _context.Users,
+                    course => course.InstructorId,
+                    user => user.Id,
+                    (course, user) => new { course, user }
+                )
+                .Join(
+                    _context.Categories,
+                    courseUser => courseUser.course.CategoryId,
+                    category => category.Id,
+                    (courseUser, category) => new CourseResponseDTO
+                    {
+                        Id = courseUser.course.Id,
+                        Title = courseUser.course.Title,
+                        Description = courseUser.course.Description,
+                        CourseContent = courseUser.course.CourseContent,
+                        ImageLink = courseUser.course.ImageLink,
+                        Price = courseUser.course.Price,
+                        IsDeleted = courseUser.course.IsDeleted,
+                        CategoryId = courseUser.course.CategoryId,
+                        CategoryName = category.Name,
+                        InstructorId = courseUser.course.InstructorId,
+                        TeacherName = courseUser.user.FullName,
+                    }
+                )
+                .ToListAsync();
+
+            return courses;
+        }
+
+        public async Task<List<CourseResponseDTO>> GetCoursesByInstructorId(int teacherId)
+        {
+            var courses = await _context.Courses
+                .Where(c => c.InstructorId == teacherId)
+                .Join(
+                    _context.Categories,
+                    course => course.CategoryId,
+                    category => category.Id,
+                    (course, category) => new CourseResponseDTO
+                    {
+                        Id = course.Id,
+                        Title = course.Title,
+                        Description = course.Description,
+                        CourseContent = course.CourseContent,
+                        ImageLink = course.ImageLink,
+                        Price = course.Price,
+                        CategoryId = course.CategoryId,
+                        IsDeleted = course.IsDeleted,
+                        InstructorId = course.InstructorId,
+                        CategoryName = category.Name
+                    }
+                )
+                .ToListAsync();
+
+            return courses;
+        }
+
         public async Task<CourseModel> GetCourseEntityById(int id)
         {
             var course = await _context.Courses

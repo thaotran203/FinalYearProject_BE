@@ -50,6 +50,13 @@ namespace FinalYearProject_BE.Repository
             return user;
         }
 
+        public async Task<List<UserModel>> GetUsersByRole(string roleName)
+        {
+            return await _context.Users
+                .Where(u => u.Role.Name == roleName)
+                .ToListAsync();
+        }
+
         public async Task<UserModel> GetUserProfile(int id)
         {
             var user = await _context.Users
@@ -65,7 +72,9 @@ namespace FinalYearProject_BE.Repository
 
         public async Task<UserModel> GetUserByEmail(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email && !u.IsDeleted);
+            return await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.Email == email && !u.IsDeleted);
         }
 
         public async Task UpdateUser(UserModel user)
