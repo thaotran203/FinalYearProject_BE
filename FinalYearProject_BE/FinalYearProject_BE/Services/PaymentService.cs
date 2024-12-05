@@ -21,14 +21,14 @@ namespace FinalYearProject_BE.Services
         }
 
 
-        public Task<string> CreatePaymentUrl(HttpContext context, PaymentRequestDTO paymentRequestDto)
+        public Task<string> CreatePaymentUrl(HttpContext context, PaymentRequestDTO paymentRequestDto, int userId)
         {
             var vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone);
             var tick = DateTime.Now.Ticks.ToString();
             var vnPay = new VnPayLibrary();
 
-            var orderInfo = $"{paymentRequestDto.UserId}|{paymentRequestDto.CourseId}";
+            var orderInfo = $"{userId}|{paymentRequestDto.CourseId}";
 
             vnPay.AddRequestData("vnp_Version", _config["Vnpay:Version"]);
             vnPay.AddRequestData("vnp_Command", _config["Vnpay:Command"]);

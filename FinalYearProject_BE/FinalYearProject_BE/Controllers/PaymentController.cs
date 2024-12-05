@@ -21,13 +21,17 @@ namespace FinalYearProject_BE.Controllers
         [HttpPost("CreatePaymentUrl")]
         public async Task<IActionResult> CreatePaymentUrl([FromBody] PaymentRequestDTO paymentRequestDto)
         {
-            if (paymentRequestDto == null || paymentRequestDto.Amount <= 0 || paymentRequestDto.CourseId <= 0 || paymentRequestDto.UserId <= 0)
+            if (paymentRequestDto == null || paymentRequestDto.Amount <= 0 || paymentRequestDto.CourseId <= 0)
             {
                 return BadRequest("Invalid payment request data.");
             }
 
+            var userId = int.Parse(User.FindFirst("Id")?.Value);
+            if (userId == null)
+                return Unauthorized("User ID not found in token.");
+
             // Generate the payment URL
-            var paymentUrl = await _paymentService.CreatePaymentUrl(HttpContext, paymentRequestDto);
+            var paymentUrl = await _paymentService.CreatePaymentUrl(HttpContext, paymentRequestDto, userId);
 
             return Ok(new { PaymentUrl = paymentUrl });
         }
