@@ -81,6 +81,8 @@ namespace FinalYearProject_BE
                 build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
             }));
 
+
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -88,8 +90,10 @@ namespace FinalYearProject_BE
             builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddScoped<IPasswordHasher<UserModel>, PasswordHasher<UserModel>>();
             builder.Services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
+            builder.Services.AddSingleton<VnPayLibrary>();
+            builder.Services.AddScoped<Utils>();
+            builder.Services.AddHttpContextAccessor();
             //builder.Services.Configure<VnPaySettings>(builder.Configuration.GetSection("VnPaySettings"));
-            //builder.Services.Configure<ZaloPaySettings>(builder.Configuration.GetSection("ZaloPaySettings"));
             //builder.Services.AddTransient<VnPayService>();
             //builder.Services.AddTransient<ZaloPayService>();
 
@@ -101,7 +105,6 @@ namespace FinalYearProject_BE
             builder.Services.AddScoped<ILessonVideoRepository, LessonVideoRepository>();
             builder.Services.AddScoped<IUserTokenRepository, UserTokenRepository>();
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
-            //builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICourseService, CourseService>();
@@ -112,9 +115,6 @@ namespace FinalYearProject_BE
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
             builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
-            //builder.Services.AddScoped<IPaymentService, PaymentService>();
-            //builder.Services.AddScoped<IVnPayService, VnPayService>();
-            //builder.Services.AddScoped<IZaloPayService, ZaloPayService>();
 
 
 
@@ -129,6 +129,7 @@ namespace FinalYearProject_BE
             });
 
             builder.Services.AddControllersWithViews();
+
 
             var app = builder.Build();
 

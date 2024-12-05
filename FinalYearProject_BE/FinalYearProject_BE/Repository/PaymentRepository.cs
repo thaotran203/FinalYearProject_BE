@@ -58,8 +58,6 @@ namespace FinalYearProject_BE.Repository
                                               PaymentDate = payment.PaymentDate,
                                               Amount = course.Price,
                                               CourseTitle = course.Title,
-                                              UserId = user.Id,
-                                              UserName = user.FullName
                                           }).ToListAsync();
 
             return paymentHistories;

@@ -10,6 +10,7 @@ namespace FinalYearProject_BE.DTOs
         public string Title { get; set; }
 
         public string Description { get; set; }
+        public bool IsDeleted { get; set; }
 
         [Required]
         public int CourseId { get; set; }

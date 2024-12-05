@@ -10,18 +10,56 @@ namespace FinalYearProject_BE.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
+        private readonly IConfiguration _config;
 
-        public PaymentController(IPaymentService paymentService)
+        public PaymentController(IPaymentService paymentService, IConfiguration config)
         {
             _paymentService = paymentService;
+            _config = config;
         }
 
-        [HttpPost("ProcessPayment")]
-        public async Task<IActionResult> ProcessPayment([FromBody] PaymentRequestDTO paymentRequest)
+        [HttpPost("CreatePaymentUrl")]
+        public async Task<IActionResult> CreatePaymentUrl([FromBody] PaymentRequestDTO paymentRequestDto)
         {
-            var userId = int.Parse(User.FindFirst("Id")?.Value);
-            await _paymentService.ProcessPayment(paymentRequest, userId);
-            return Ok("Payment processed and enrollment created.");
+            if (paymentRequestDto == null || paymentRequestDto.Amount <= 0 || paymentRequestDto.CourseId <= 0 || paymentRequestDto.UserId <= 0)
+            {
+                return BadRequest("Invalid payment request data.");
+            }
+
+            // Generate the payment URL
+            var paymentUrl = await _paymentService.CreatePaymentUrl(HttpContext, paymentRequestDto);
+
+            return Ok(new { PaymentUrl = paymentUrl });
+        }
+
+
+        [HttpGet("PaymentCallback")]
+        public async Task<IActionResult> PaymentCallback()
+        {
+            var queryParameters = Request.Query;
+
+            if (!queryParameters.Any())
+            {
+                return BadRequest("No query parameters found in the callback.");
+            }
+
+            try
+            {
+                var paymentResponse = await _paymentService.PaymentExecute(queryParameters);
+
+                if (paymentResponse.Success)
+                {
+                    return Redirect("https://edmicroielts.netlify.app/");
+                }
+                else
+                {
+                    return BadRequest("Payment verification failed.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while processing the payment callback: {ex.Message}");
+            }
         }
 
         [HttpGet("PaymentHistories")]

@@ -41,7 +41,7 @@ namespace FinalYearProject_BE.Repository
 
         public async Task<List<LessonModel>> GetLessonsByCourseId(int courseId)
         {
-            return await _context.Lessons.Where(l => l.CourseId == courseId && !l.IsDeleted).ToListAsync();
+            return await _context.Lessons.Where(l => l.CourseId == courseId).ToListAsync();
         }
 
         public async Task UpdateLesson(LessonModel lesson)
