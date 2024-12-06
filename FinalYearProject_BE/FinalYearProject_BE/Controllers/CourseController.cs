@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -72,6 +72,31 @@ namespace FinalYearProject_BE.Controllers
             var courses = await _courseService.GetCoursesByInstructorId(teacherId);
             return Ok(courses);
         }
+
+        [HttpGet("{courseId}/students")]
+        public async Task<IActionResult> GetStudentsInCourse(int courseId, [FromQuery] string? searchQuery = null)
+        {
+            try
+            {
+                var studentsWithGrades = await _courseService.GetStudentsInCourse(courseId, searchQuery);
+
+                var response = studentsWithGrades.Select(s => new
+                {
+                    FullName = s.FullName,
+                    Email = s.Email,
+                    PhoneNumber = s.PhoneNumber,
+                    Grade = s.Grade,
+                    TestDate = s.TestDate
+                });
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCourse(int id, [FromForm] CourseDTO courseDto)
