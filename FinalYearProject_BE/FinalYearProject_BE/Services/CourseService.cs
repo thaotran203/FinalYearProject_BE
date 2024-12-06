@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using FinalYearProject_BE.Data;
