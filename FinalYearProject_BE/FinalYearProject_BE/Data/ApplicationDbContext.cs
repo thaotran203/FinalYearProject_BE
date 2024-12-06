@@ -21,8 +21,7 @@ namespace FinalYearProject_BE.Data
         public DbSet<MessageModel> Messages { get; set; }
         public DbSet<PaymentModel> Payments { get; set; }
         public DbSet<QuestionModel> Questions { get; set; }
-        public DbSet<TestModel> Tests { get; set; }
-        public DbSet<TestQuestionModel> TestQuestions { get; set; }
+        public DbSet<FinalTestModel> FinalTests { get; set; }
         public DbSet<UserTokenModel> UserTokens { get; set; }
         public DbSet<LessonProgressModel> LessonProgresses { get; set; }
 
@@ -43,20 +42,6 @@ namespace FinalYearProject_BE.Data
                 .HasOne(m => m.Receiver)
                 .WithMany(u => u.ReceivedMessages)
                 .HasForeignKey(m => m.ReceiverId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Configure the relationship between TestQuestion and Test
-            modelBuilder.Entity<TestQuestionModel>()
-                .HasOne(tq => tq.Test)
-                .WithMany(t => t.TestQuestions)
-                .HasForeignKey(tq => tq.TestId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Configure the relationship between TestQuestion and Question
-            modelBuilder.Entity<TestQuestionModel>()
-                .HasOne(tq => tq.Question)
-                .WithMany(q => q.TestQuestions)
-                .HasForeignKey(tq => tq.QuestionId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

@@ -31,7 +31,7 @@ namespace FinalYearProject_BE.Models
 
         [NotMapped]
         [ValidateNever]
-        public List<TestModel> Tests { get; set; }
+        public List<FinalTestModel> Tests { get; set; }
 
         [NotMapped]
         [ValidateNever]

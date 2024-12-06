@@ -12,26 +12,16 @@ namespace FinalYearProject_BE.Models
         public int Id { get; set; }
 
         [Required]
-        public string Text { get; set; }
+        public string Content { get; set; }
 
         [Required]
-        public string QuestionType { get; set; }
-
-        [Required]
-        public bool IsDeleted { get; set; }
-
-        [Required]
-        [ForeignKey("Lesson")]
-        public int LessonId { get; set; }
+        [ForeignKey("FinalTest")]
+        public int FinalTestId { get; set; }
         [ValidateNever]
-        public LessonModel Lesson { get; set; }
+        public FinalTestModel FinalTest { get; set; }
 
         [NotMapped]
         [ValidateNever]
         public List<AnswerModel> Answers { get; set; }
-
-        [NotMapped]
-        [ValidateNever]
-        public List<TestQuestionModel> TestQuestions { get; set; }
     }
 }

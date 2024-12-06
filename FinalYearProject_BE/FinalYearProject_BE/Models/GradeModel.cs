@@ -12,19 +12,16 @@ namespace FinalYearProject_BE.Models
         public int Id { get; set; }
 
         [Required]
-        public DateTime StartTime { get; set; }
-
-        [Required]
-        public DateTime EndTime { get; set; }
+        public DateTime TestDate { get; set; }
 
         [Required]
         public double Grade { get; set; }
 
         [Required]
-        [ForeignKey("Test")]
-        public int TestId { get; set; }
+        [ForeignKey("FinalTest")]
+        public int FinalTestId { get; set; }
         [ValidateNever]
-        public TestModel Test { get; set; }
+        public FinalTestModel FinalTest { get; set; }
 
         [Required]
         [ForeignKey("User")]

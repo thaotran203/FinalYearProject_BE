@@ -30,15 +30,15 @@ namespace FinalYearProject_BE.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsCorrect")
                         .HasColumnType("bit");
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -136,6 +136,30 @@ namespace FinalYearProject_BE.Migrations
                     b.ToTable("Enrollment");
                 });
 
+            modelBuilder.Entity("FinalYearProject_BE.Models.FinalTestModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("TimeLimit")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("FinalTest");
+                });
+
             modelBuilder.Entity("FinalYearProject_BE.Models.GradeModel", b =>
                 {
                     b.Property<int>("Id")
@@ -144,24 +168,21 @@ namespace FinalYearProject_BE.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("FinalTestId")
+                        .HasColumnType("int");
 
                     b.Property<double>("Grade")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("StartTime")
+                    b.Property<DateTime>("TestDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("TestId")
-                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TestId");
+                    b.HasIndex("FinalTestId");
 
                     b.HasIndex("UserId");
 
@@ -317,23 +338,16 @@ namespace FinalYearProject_BE.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("LessonId")
+                    b.Property<int>("FinalTestId")
                         .HasColumnType("int");
-
-                    b.Property<string>("QuestionType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LessonId");
+                    b.HasIndex("FinalTestId");
 
                     b.ToTable("Question");
                 });
@@ -353,56 +367,6 @@ namespace FinalYearProject_BE.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Role");
-                });
-
-            modelBuilder.Entity("FinalYearProject_BE.Models.TestModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("LessonId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TimeLimit")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TotalQuestion")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LessonId");
-
-                    b.ToTable("Test");
-                });
-
-            modelBuilder.Entity("FinalYearProject_BE.Models.TestQuestionModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TestId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("TestId");
-
-                    b.ToTable("TestQuestion");
                 });
 
             modelBuilder.Entity("FinalYearProject_BE.Models.UserModel", b =>
@@ -428,7 +392,6 @@ namespace FinalYearProject_BE.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -517,11 +480,22 @@ namespace FinalYearProject_BE.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("FinalYearProject_BE.Models.FinalTestModel", b =>
+                {
+                    b.HasOne("FinalYearProject_BE.Models.CourseModel", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
             modelBuilder.Entity("FinalYearProject_BE.Models.GradeModel", b =>
                 {
-                    b.HasOne("FinalYearProject_BE.Models.TestModel", "Test")
+                    b.HasOne("FinalYearProject_BE.Models.FinalTestModel", "FinalTest")
                         .WithMany()
-                        .HasForeignKey("TestId")
+                        .HasForeignKey("FinalTestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -531,7 +505,7 @@ namespace FinalYearProject_BE.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Test");
+                    b.Navigation("FinalTest");
 
                     b.Navigation("User");
                 });
@@ -625,43 +599,13 @@ namespace FinalYearProject_BE.Migrations
 
             modelBuilder.Entity("FinalYearProject_BE.Models.QuestionModel", b =>
                 {
-                    b.HasOne("FinalYearProject_BE.Models.LessonModel", "Lesson")
+                    b.HasOne("FinalYearProject_BE.Models.FinalTestModel", "FinalTest")
                         .WithMany()
-                        .HasForeignKey("LessonId")
+                        .HasForeignKey("FinalTestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Lesson");
-                });
-
-            modelBuilder.Entity("FinalYearProject_BE.Models.TestModel", b =>
-                {
-                    b.HasOne("FinalYearProject_BE.Models.LessonModel", "Lesson")
-                        .WithMany()
-                        .HasForeignKey("LessonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Lesson");
-                });
-
-            modelBuilder.Entity("FinalYearProject_BE.Models.TestQuestionModel", b =>
-                {
-                    b.HasOne("FinalYearProject_BE.Models.QuestionModel", "Question")
-                        .WithMany("TestQuestions")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("FinalYearProject_BE.Models.TestModel", "Test")
-                        .WithMany("TestQuestions")
-                        .HasForeignKey("TestId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-
-                    b.Navigation("Test");
+                    b.Navigation("FinalTest");
                 });
 
             modelBuilder.Entity("FinalYearProject_BE.Models.UserModel", b =>
@@ -684,16 +628,6 @@ namespace FinalYearProject_BE.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("FinalYearProject_BE.Models.QuestionModel", b =>
-                {
-                    b.Navigation("TestQuestions");
-                });
-
-            modelBuilder.Entity("FinalYearProject_BE.Models.TestModel", b =>
-                {
-                    b.Navigation("TestQuestions");
                 });
 
             modelBuilder.Entity("FinalYearProject_BE.Models.UserModel", b =>

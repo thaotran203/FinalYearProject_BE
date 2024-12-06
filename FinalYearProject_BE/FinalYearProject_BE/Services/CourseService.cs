@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using FinalYearProject_BE.Data;
 using FinalYearProject_BE.DTOs;
 using FinalYearProject_BE.Models;
 using FinalYearProject_BE.Repository.IRepository;
 using FinalYearProject_BE.Services.IService;
-using Humanizer;
+using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol.Core.Types;
 
 namespace FinalYearProject_BE.Services
@@ -15,12 +16,14 @@ namespace FinalYearProject_BE.Services
         private readonly ICourseRepository _courseRepository;
         private readonly IMapper _mapper;
         private readonly ICloudinaryService _cloudinaryService;
+        private readonly ApplicationDbContext _context;
 
-        public CourseService (ICourseRepository courseRepository, IMapper mapper, ICloudinaryService cloudinaryService)
+        public CourseService (ICourseRepository courseRepository, IMapper mapper, ICloudinaryService cloudinaryService, ApplicationDbContext context)
         {
             _courseRepository = courseRepository;
             _mapper = mapper;
             _cloudinaryService = cloudinaryService;
+            _context = context;
         }
 
         public async Task CreateCourse(CourseDTO courseDto)
@@ -112,6 +115,39 @@ namespace FinalYearProject_BE.Services
         public async Task<List<CourseResponseDTO>> GetCoursesByInstructorId(int teacherId)
         {
             return await _courseRepository.GetCoursesByInstructorId(teacherId);
+        }
+
+        public async Task<List<(string FullName, string Email, string PhoneNumber, double? Grade, DateTime? TestDate)>> GetStudentsInCourse(int courseId, string? searchQuery = null)
+        {
+            var query = _context.Enrollments
+                .Include(e => e.User)
+                .Where(e => e.CourseId == courseId && !e.User.IsDeleted)
+                .Select(e => new
+                {
+                    FullName = e.User.FullName,
+                    Email = e.User.Email,
+                    PhoneNumber = e.User.PhoneNumber,
+                    GradeInfo = _context.Grades
+                        .Where(g => g.UserId == e.UserId && g.FinalTest.CourseId == courseId)
+                        .Select(g => new { g.Grade, g.TestDate })
+                        .FirstOrDefault()
+                })
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                query = query.Where(u => u.FullName.Contains(searchQuery) || u.Email.Contains(searchQuery));
+            }
+
+            var result = await query.ToListAsync();
+
+            return result.Select(r => (
+                r.FullName,
+                r.Email,
+                r.PhoneNumber,
+                r.GradeInfo?.Grade,
+                r.GradeInfo?.TestDate
+            )).ToList();
         }
 
         public async Task SoftDeleteCourse(int id)

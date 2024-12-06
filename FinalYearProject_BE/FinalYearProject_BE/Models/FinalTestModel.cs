@@ -4,24 +4,26 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinalYearProject_BE.Models
 {
-    [Table("TestQuestion")]
-    public class TestQuestionModel
+    [Table("FinalTest")]
+    public class FinalTestModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
-        [ForeignKey("Test")]
-        public int TestId { get; set; }
-        [ValidateNever]
-        public TestModel Test { get; set; }
+        public int TimeLimit { get; set; }
+
+        public bool IsDeleted { get; set; }
 
         [Required]
-        [ForeignKey("Question")]
-        public int QuestionId { get; set; }
+        [ForeignKey("Course")]
+        public int CourseId { get; set; }
         [ValidateNever]
-        public QuestionModel Question { get; set; }
+        public CourseModel Course { get; set; }
 
+        [NotMapped]
+        [ValidateNever]
+        public List<QuestionModel> Questions { get; set; }
     }
 }
