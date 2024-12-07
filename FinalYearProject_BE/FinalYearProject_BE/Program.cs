@@ -93,9 +93,9 @@ namespace FinalYearProject_BE
             builder.Services.AddSingleton<VnPayLibrary>();
             builder.Services.AddScoped<Utils>();
             builder.Services.AddHttpContextAccessor();
-            //builder.Services.Configure<VnPaySettings>(builder.Configuration.GetSection("VnPaySettings"));
-            //builder.Services.AddTransient<VnPayService>();
-            //builder.Services.AddTransient<ZaloPayService>();
+            builder.Services.AddAuthentication();
+            builder.Services.AddAuthorization();
+            builder.Services.AddSignalR();
 
             // Dang ky cac service va repository
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -105,6 +105,8 @@ namespace FinalYearProject_BE
             builder.Services.AddScoped<ILessonVideoRepository, LessonVideoRepository>();
             builder.Services.AddScoped<IUserTokenRepository, UserTokenRepository>();
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+
 
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICourseService, CourseService>();
@@ -115,6 +117,7 @@ namespace FinalYearProject_BE
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
             builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<IMessageService, MessageService>();
 
 
 
@@ -140,6 +143,7 @@ namespace FinalYearProject_BE
                 app.UseSwaggerUI();
             }
 
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
@@ -148,6 +152,12 @@ namespace FinalYearProject_BE
             app.UseAuthorization();
             app.UseCors("MyCors");
             app.UseMiddleware<JwtMiddleware>();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chathub");
+            });
 
             app.MapControllers();
 
