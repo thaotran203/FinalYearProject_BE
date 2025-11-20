@@ -24,8 +24,19 @@ namespace FinalYearProject_BE.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllLessons()
+        public async Task<IActionResult> GetAllLessons([FromQuery] int? courseId)
         {
+            if (courseId.HasValue)
+            {
+                if (courseId.Value <= 0)
+                {
+                    return BadRequest("courseId must be greater than 0.");
+                }
+
+                var lessonsByCourse = await _lessonService.GetLessonsByCourseId(courseId.Value);
+                return Ok(lessonsByCourse);
+            }
+
             var lessons = await _lessonService.GetAllLessons();
             return Ok(lessons);
         }
