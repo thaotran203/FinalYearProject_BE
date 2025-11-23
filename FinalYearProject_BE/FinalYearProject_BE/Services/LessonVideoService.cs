@@ -3,6 +3,7 @@ using FinalYearProject_BE.DTOs;
 using FinalYearProject_BE.Models;
 using FinalYearProject_BE.Repository.IRepository;
 using FinalYearProject_BE.Services.IService;
+using Hangfire;
 
 namespace FinalYearProject_BE.Services
 {
@@ -11,12 +12,14 @@ namespace FinalYearProject_BE.Services
         private readonly ILessonVideoRepository _lessonVideoRepository;
         private readonly ICloudinaryService _cloudinaryService;
         private readonly IMapper _mapper;
+        private readonly IBackgroundJobClient _backgroundJobClient;
 
-        public LessonVideoService(ILessonVideoRepository lessonVideoRepository, ICloudinaryService cloudinaryService, IMapper mapper)
+        public LessonVideoService(ILessonVideoRepository lessonVideoRepository, ICloudinaryService cloudinaryService, IMapper mapper, IBackgroundJobClient backgroundJobClient)
         {
             _lessonVideoRepository = lessonVideoRepository;
             _cloudinaryService = cloudinaryService;
             _mapper = mapper;
+            _backgroundJobClient = backgroundJobClient;
         }
 
         public async Task<VideoResponseDTO> AddVideo(VideoUploadDTO videoUploadDto)
@@ -31,10 +34,14 @@ namespace FinalYearProject_BE.Services
             var lessonVideoModel = new LessonVideoModel
             {
                 VideoUrl = videoUrl,
-                LessonId = videoUploadDto.LessonId
+                LessonId = videoUploadDto.LessonId,
+                ProcessingStatus = "Queued"
             };
 
             await _lessonVideoRepository.AddVideo(lessonVideoModel);
+            _backgroundJobClient.Enqueue<ITranscriptionService>(
+            service => service.GenerateTranscriptAsync(lessonVideoModel.Id));
+
             return _mapper.Map<VideoResponseDTO>(lessonVideoModel);
         }
 
