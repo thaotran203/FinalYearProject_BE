@@ -14,6 +14,13 @@ namespace FinalYearProject_BE.Models
         [Required]
         public string VideoUrl { get; set; }
 
+        public string? Transcript { get; set; }
+
+        [StringLength(50)]
+        public string ProcessingStatus { get; set; } = "Pending";
+
+        public string? ErrorMessage { get; set; }
+
         [Required]
         [ForeignKey("Lesson")]
         public int LessonId { get; set; }

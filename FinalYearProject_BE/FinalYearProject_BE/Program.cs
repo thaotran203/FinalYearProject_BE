@@ -1,4 +1,4 @@
-using FinalYearProject_BE.Data;
+﻿using FinalYearProject_BE.Data;
 using FinalYearProject_BE.Models;
 using FinalYearProject_BE.Repository.IRepository;
 using FinalYearProject_BE.Repository;
@@ -13,6 +13,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using FinalYearProject_BE.Settings;
 using Microsoft.OpenApi.Models;
+using Hangfire;
+using FinalYearProject_BE.Hubs;
 
 namespace FinalYearProject_BE
 {
@@ -26,6 +28,17 @@ namespace FinalYearProject_BE
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
+
+            // 2. Add Hangfire
+            builder.Services.AddHangfire(config => config
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddHangfireServer();
+
+            builder.Services.AddHttpClient();
 
             // Configure JWT Authentication
             var secretKey = configuration["Jwt:SecretKey"];
@@ -76,10 +89,17 @@ namespace FinalYearProject_BE
             });
 
 
-            builder.Services.AddCors(p => p.AddPolicy("MyCors", build =>
+            builder.Services.AddCors(options =>
             {
-                build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
-            }));
+                options.AddPolicy("MyCors", policy =>
+                {
+                    // Cho phép mọi nguồn, mọi header, mọi phương thức
+                    policy.SetIsOriginAllowed(origin => true)
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                });
+            });
 
 
 
@@ -118,6 +138,7 @@ namespace FinalYearProject_BE
             builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
             builder.Services.AddScoped<IMessageService, MessageService>();
+            builder.Services.AddScoped<ITranscriptionService, TranscriptionService>();
 
 
 
@@ -144,21 +165,16 @@ namespace FinalYearProject_BE
             }
 
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseCors("MyCors");
             app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseCors("MyCors");
             app.UseMiddleware<JwtMiddleware>();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-                endpoints.MapHub<ChatHub>("/chathub");
-            });
-
+            app.UseHangfireDashboard();
+            app.MapHub<ChatHub>("/chatHub");
             app.MapControllers();
 
             app.Run();
