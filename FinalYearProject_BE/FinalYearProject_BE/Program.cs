@@ -125,7 +125,6 @@ namespace FinalYearProject_BE
             builder.Services.AddScoped<ILessonVideoRepository, LessonVideoRepository>();
             builder.Services.AddScoped<IUserTokenRepository, UserTokenRepository>();
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
-            builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
 
             builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -137,7 +136,6 @@ namespace FinalYearProject_BE
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
             builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
-            builder.Services.AddScoped<IMessageService, MessageService>();
             builder.Services.AddScoped<ITranscriptionService, TranscriptionService>();
 
 
