@@ -33,7 +33,7 @@ namespace FinalYearProject_BE.Services
                     new Claim("TokenVersion", user.TokenVersion.ToString()),
                 }),
 
-                Expires = DateTime.Now.AddMinutes(30),
+                Expires = DateTime.UtcNow.AddMinutes(30),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes), SecurityAlgorithms.HmacSha256)
             };
 

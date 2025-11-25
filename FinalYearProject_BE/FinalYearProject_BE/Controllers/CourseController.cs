@@ -78,15 +78,13 @@ namespace FinalYearProject_BE.Controllers
         {
             try
             {
-                var studentsWithGrades = await _courseService.GetStudentsInCourse(courseId, searchQuery);
+                var students = await _courseService.GetStudentsInCourse(courseId, searchQuery);
 
-                var response = studentsWithGrades.Select(s => new
+                var response = students.Select(s => new
                 {
                     FullName = s.FullName,
                     Email = s.Email,
-                    PhoneNumber = s.PhoneNumber,
-                    Grade = s.Grade,
-                    TestDate = s.TestDate
+                    PhoneNumber = s.PhoneNumber
                 });
 
                 return Ok(response);

@@ -20,5 +20,6 @@ namespace FinalYearProject_BE.Services.IService
         Task UpdatePassword(int userId, UpdatePasswordDTO updatePasswordDto);
         Task<LoginResponseDTO> RefreshJwtToken(string refreshToken);
         Task Logout(int userId, string refreshToken);
+        Task<LoginResponseDTO> LoginWithGoogle(GoogleLoginDTO googleLoginDTO);
     }
 }
