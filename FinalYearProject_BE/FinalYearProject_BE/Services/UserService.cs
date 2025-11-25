@@ -3,6 +3,7 @@ using FinalYearProject_BE.DTOs;
 using FinalYearProject_BE.Models;
 using FinalYearProject_BE.Repository.IRepository;
 using FinalYearProject_BE.Services.IService;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json.Linq;
 using NuGet.Common;
@@ -89,6 +90,64 @@ namespace FinalYearProject_BE.Services
                 UserRole = userRole
             };
         }
+
+        public async Task<LoginResponseDTO> RegisterOrLoginWithGoogle(string googleEmail, string fullName, string imageUrl)
+        {
+            var user = await _userRepository.GetUserByEmail(googleEmail);
+
+            if (user == null)
+            {
+                var newUser = new UserModel
+                {
+                    FullName = fullName,
+                    Email = googleEmail,
+                    RoleId = 1,
+                    IsDeleted = false,
+                    Password = null, 
+                    TokenVersion = 1
+                };
+
+                await _userRepository.CreateUser(newUser);
+                user = newUser;
+            }
+            else
+            {
+                throw new Exception("Email already exists.");
+            }
+
+            // Tăng version token để bảo mật
+            user.TokenVersion++;
+            await _userRepository.UpdateUser(user);
+
+            // Tạo JWT token và refresh token
+            var jwtToken = _jwtTokenService.GenerateToken(user);
+            var refreshToken = Guid.NewGuid().ToString();
+            var refreshTokenExpiration = DateTime.UtcNow.AddDays(10);
+
+            // Lưu refresh token vào bảng UserToken
+            var userToken = new UserTokenModel
+            {
+                Token = refreshToken,
+                Expiration = refreshTokenExpiration,
+                UserId = user.Id,
+                TokenType = TokenType.Refresh
+            };
+
+            await _userTokenRepository.AddToken(userToken);
+
+            // Lấy role của user
+            var userRole = user.Role?.Name ?? "Unknown";
+
+            // Trả về LoginResponseDTO
+            return new LoginResponseDTO
+            {
+                JwtToken = jwtToken,
+                RefreshToken = refreshToken,
+                RefreshTokenExpiration = refreshTokenExpiration,
+                UserRole = userRole
+            };
+        }
+
 
         public async Task CreateUserForTeacher(RegisterUserDTO registerDto)
         {
@@ -288,6 +347,91 @@ namespace FinalYearProject_BE.Services
                 user.TokenVersion++;
                 await _userRepository.UpdateUser(user);
             }
+        }
+
+        public async Task<LoginResponseDTO> LoginWithGoogle(GoogleLoginDTO googleLoginDTO)
+        {
+            GoogleJsonWebSignature.Payload payload;
+
+            try
+            {
+                var settings = new GoogleJsonWebSignature.ValidationSettings()
+                {
+                    Audience = new List<string>() { _configuration["Google:ClientId"] }
+                };
+
+                payload = await GoogleJsonWebSignature.ValidateAsync(googleLoginDTO.IdToken, settings);
+            }
+            catch (InvalidJwtException)
+            {
+                throw new ArgumentException("Invalid Google Token or Token Expired.");
+            }
+
+            var googleEmail = payload.Email;
+            var fullName = payload.Name;
+            var imageUrl = payload.Picture;
+
+            var user = await _userRepository.GetUserByEmail(googleEmail);
+
+            if (user == null)
+            {
+                // CASE 1: NGƯỜI DÙNG MỚI (REGISTER)
+                var newUser = new UserModel
+                {
+                    FullName = fullName,
+                    Email = googleEmail,
+                    RoleId = 1,
+                    IsDeleted = false,
+                    Password = null,
+                    TokenVersion = 1,
+                    PhoneNumber = "",
+                    ImageUrl = imageUrl
+                };
+
+                await _userRepository.CreateUser(newUser);
+                user = newUser;
+            }
+            else
+            {
+                // CASE 2: NGƯỜI DÙNG CŨ (LOGIN)
+
+                if (user.IsDeleted)
+                {
+                    throw new UnauthorizedAccessException("Account is locked or deleted.");
+                }
+
+                if (string.IsNullOrEmpty(user.ImageUrl) && !string.IsNullOrEmpty(imageUrl))
+                {
+                    user.ImageUrl = imageUrl;
+                }
+            }
+
+            user.TokenVersion++;
+            await _userRepository.UpdateUser(user);
+
+            var jwtToken = _jwtTokenService.GenerateToken(user);
+            var refreshToken = Guid.NewGuid().ToString();
+            var refreshTokenExpiration = DateTime.UtcNow.AddDays(10);
+
+            var userToken = new UserTokenModel
+            {
+                Token = refreshToken,
+                Expiration = refreshTokenExpiration,
+                UserId = user.Id,
+                TokenType = TokenType.Refresh
+            };
+
+            await _userTokenRepository.AddToken(userToken);
+
+            var userRole = user.Role?.Name ?? "Unknown";
+
+            return new LoginResponseDTO
+            {
+                JwtToken = jwtToken,
+                RefreshToken = refreshToken,
+                RefreshTokenExpiration = refreshTokenExpiration,
+                UserRole = userRole
+            };
         }
 
         private DateTime? GetJwtExpirationDate(string token)

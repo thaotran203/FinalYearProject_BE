@@ -277,5 +277,28 @@ namespace FinalYearProject_BE.Controllers
 
             return Ok("Logged out successfully.");
         }
+
+
+        [HttpPost("Login/Google")]
+        public async Task<IActionResult> LoginWithGoogle([FromBody] GoogleLoginDTO googleLoginDTO)
+        {
+            try
+            {
+                var result = await _userService.LoginWithGoogle(googleLoginDTO);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
     }
 }

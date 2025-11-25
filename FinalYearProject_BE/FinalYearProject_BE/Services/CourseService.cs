@@ -117,7 +117,7 @@ namespace FinalYearProject_BE.Services
             return await _courseRepository.GetCoursesByInstructorId(teacherId);
         }
 
-        public async Task<List<(string FullName, string Email, string PhoneNumber, double? Grade, DateTime? TestDate)>> GetStudentsInCourse(int courseId, string? searchQuery = null)
+        public async Task<List<(string FullName, string Email, string PhoneNumber)>> GetStudentsInCourse(int courseId, string? searchQuery = null)
         {
             var query = _context.Enrollments
                 .Include(e => e.User)
@@ -127,10 +127,6 @@ namespace FinalYearProject_BE.Services
                     FullName = e.User.FullName,
                     Email = e.User.Email,
                     PhoneNumber = e.User.PhoneNumber,
-                    GradeInfo = _context.Grades
-                        .Where(g => g.UserId == e.UserId && g.FinalTest.CourseId == courseId)
-                        .Select(g => new { g.Grade, g.TestDate })
-                        .FirstOrDefault()
                 })
                 .AsQueryable();
 
@@ -144,9 +140,7 @@ namespace FinalYearProject_BE.Services
             return result.Select(r => (
                 r.FullName,
                 r.Email,
-                r.PhoneNumber,
-                r.GradeInfo?.Grade,
-                r.GradeInfo?.TestDate
+                r.PhoneNumber
             )).ToList();
         }
 
