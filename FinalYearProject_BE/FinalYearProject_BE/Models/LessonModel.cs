@@ -27,14 +27,6 @@ namespace FinalYearProject_BE.Models
 
         [NotMapped]
         [ValidateNever]
-        public List<QuestionModel> Questions { get; set; }
-
-        [NotMapped]
-        [ValidateNever]
-        public List<FinalTestModel> Tests { get; set; }
-
-        [NotMapped]
-        [ValidateNever]
         public List<LessonVideoModel> LessonVideos { get; set; }
 
         [NotMapped]
