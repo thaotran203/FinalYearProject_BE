@@ -19,8 +19,7 @@ namespace FinalYearProject_BE.Models
 
         public string? Password { get; set; }
 
-        [Required]
-        public string PhoneNumber { get; set; }
+        public string?  PhoneNumber { get; set; }
 
         public string? ImageUrl { get; set; }
 
@@ -43,18 +42,6 @@ namespace FinalYearProject_BE.Models
         [NotMapped]
         [ValidateNever]
         public List<PaymentModel> Payments { get; set; }
-
-        [NotMapped]
-        [ValidateNever]
-        public List<GradeModel> Grades { get; set; }
-
-        [NotMapped]
-        [ValidateNever]
-        public List<MessageModel> SentMessages { get; set; }
-
-        [NotMapped]
-        [ValidateNever]
-        public List<MessageModel> ReceivedMessages { get; set; }
 
         [NotMapped]
         [ValidateNever]
